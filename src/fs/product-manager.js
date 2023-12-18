@@ -58,6 +58,13 @@ class ProductManager {
     return { sucess: true, payload: productUpdate }
   }
 
+  deleteProduct = async (itemId) => {
+    const products = await this.getProduct()
+    const productsUpdate = products.filter(el => el.id !== itemId)
+    await this.atomicWriteFile(productsUpdate)
+    return { sucess: true, payload: productsUpdate }
+  }
+
   generateID = (products) => {
     return (products.length === 0) ? 1 : products[products.length - 1].id + 1
   }
@@ -75,13 +82,7 @@ class ProductManager {
 (async () => {
   const dm = new ProductManager('src/data/products.json')
   const products = await dm.getProduct()
-  const productAdd = await dm.updateProduct(1, {
-    title: 'Libreta de Notas',
-    description: 'Libreta con tapa dura y páginas rayadas',
-    price: 9.99,
-    thumbnail: 'https://ejemplo.com/libreta.png',
-    code: 'LB_RAYADA_003'
-  })
+  const productAdd = await dm.deleteProduct(4)
   console.log(products)
-  console.log('producto modificado', productAdd)
+  console.log('borrado', productAdd)
 })()

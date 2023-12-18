@@ -1,1 +1,29 @@
-[]
+[
+	{
+		"title": "Camisa de Algodón",
+		"description": "Camisa de manga larga hecha de algodón orgánico",
+		"price": 29.99,
+		"thumbnail": "https://ejemplo.com/camisa.png",
+		"code": "CM_ALGODON_001",
+		"stock": 100,
+		"id": 1
+	},
+	{
+		"title": "Zapatillas Deportivas",
+		"description": "Zapatillas ideales para entrenamientos intensivos",
+		"price": 49.99,
+		"thumbnail": "https://ejemplo.com/zapatillas.png",
+		"code": "ZP_DEPORTE_002",
+		"stock": 75,
+		"id": 2
+	},
+	{
+		"title": "Libreta de Notas",
+		"description": "Libreta con tapa dura y páginas rayadas",
+		"price": 9.99,
+		"thumbnail": "https://ejemplo.com/libreta.png",
+		"code": "LB_RAYADA_003",
+		"stock": 150,
+		"id": 3
+	}
+]

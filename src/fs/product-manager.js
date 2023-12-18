@@ -47,6 +47,17 @@ class ProductManager {
     }
   }
 
+  updateProduct = async (itemId, dataUpdate) => {
+    const products = await this.getProduct() // recibo los productos
+    const productsUpdated = products.map(el => { // voy por todos los objetos del array y busco cual es el id que busco luego agrego los datos actualizado, si no es el que busco deja todo igual
+      if (el.id === itemId) return { ...el, ...dataUpdate }
+      else return el
+    })
+    await this.atomicWriteFile(productsUpdated)
+    const productUpdate = await this.getProductByID(itemId)
+    return { sucess: true, payload: productUpdate }
+  }
+
   generateID = (products) => {
     return (products.length === 0) ? 1 : products[products.length - 1].id + 1
   }
@@ -64,15 +75,13 @@ class ProductManager {
 (async () => {
   const dm = new ProductManager('src/data/products.json')
   const products = await dm.getProduct()
-  const productAdd = await dm.addProduct({
+  const productAdd = await dm.updateProduct(1, {
     title: 'Libreta de Notas',
     description: 'Libreta con tapa dura y páginas rayadas',
     price: 9.99,
     thumbnail: 'https://ejemplo.com/libreta.png',
     code: 'LB_RAYADA_003'
   })
-  const product = await dm.getProductByID(6)
   console.log(products)
-  console.log(productAdd)
-  console.log(product)
+  console.log('producto modificado', productAdd)
 })()

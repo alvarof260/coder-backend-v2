@@ -16,26 +16,27 @@ class ProductManager {
 
   getProduct = async () => {
     try {
-      const response = await readFile(this.#path, 'utf-8')
-      const products = JSON.parse(response)
+      const response = await readFile(this.#path, 'utf-8') // recibo los datos que tiene el archivo como json stringify
+      const products = JSON.parse(response) // paso a tenerlo parseado para poder trabajar con el array
       return products
     } catch (err) {
-      console.error('Error al leer el archivo', err)
+      console.error('Error al leer el archivo: ', err) // manejo los errores
     }
   }
 
   addProduct = async (product) => {
     try {
-      const { title, description, price, thumbnail, code, stock } = product
-      const products = await this.getProduct()
-      const id = this.generateID(products)
-      const productToAdd = { title, description, price, thumbnail, code, stock, id }
-      products.push(productToAdd)
+      const { title, description, price, thumbnail, code, stock } = product // recibo los datos del producto a añadir
+      if (!title || !description || !price || !thumbnail || !code || !stock) return { sucess: false, error: 'Faltan datos al productos.' } // verificacion de datos, en el cual faltan datos retorna un error
+      const products = await this.getProduct() // obtengo el array de producto para trabajar
+      const id = this.generateID(products) // genero el id
+      const productToAdd = { title, description, price, thumbnail, code, stock, id } // creo el objeto del producto
+      products.push(productToAdd) // agrego al array para luego pasarlo al archivo
       await this.atomicWriteFile(products)
       return { sucess: true, payload: productToAdd }
     } catch (err) {
-      console.error('Error al añadir el producto al archivo', err)
-      throw new Error('No se pudo añadir el producto')
+      console.error('Error al añadir el producto al archivo: ', err)
+      throw new Error('No se pudo añadir el producto.')
     }
   }
 
@@ -48,8 +49,8 @@ class ProductManager {
       // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
       await writeFile(this.#path, JSON.stringify(products, null, '\t'))
     } catch (err) {
-      console.error('Error al escribir en el archivo', err)
-      throw new Error('No se pudo escribir en el archivo') // Propagar el error para un manejo superior
+      console.error('Error al escribir en el archivo: ', err)
+      throw new Error('No se pudo escribir en el archivo.') // Propagar el error para un manejo superior
     }
   }
 }

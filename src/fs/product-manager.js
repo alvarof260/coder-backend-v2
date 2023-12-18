@@ -24,6 +24,13 @@ class ProductManager {
     }
   }
 
+  getProductByID = async (id) => {
+    const products = await this.getProduct()
+    const product = products.find(el => el.id === id) // busco el id, si este id existe, lo guardo en una variable
+    if (typeof product === 'undefined') return { sucess: false, error: `No se encontro el producto con id: ${id}.` } // no existe el id, devuelvo el error
+    return { sucess: true, payload: product } // devuelvo el producto que se pidio
+  }
+
   addProduct = async (product) => {
     try {
       const { title, description, price, thumbnail, code, stock } = product // recibo los datos del producto a añadir
@@ -64,6 +71,8 @@ class ProductManager {
     thumbnail: 'https://ejemplo.com/libreta.png',
     code: 'LB_RAYADA_003'
   })
+  const product = await dm.getProductByID(6)
   console.log(products)
   console.log(productAdd)
+  console.log(product)
 })()

@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 
-class ProductManager {
+export class ProductManager {
   #path // ocultar la propiedad
   constructor (path) {
     this.#path = path // guardar ruta donde se guarda los productos
@@ -79,10 +79,12 @@ class ProductManager {
     }
   }
 }
-(async () => {
+
+/* (async () => {
   const dm = new ProductManager('src/data/products.json')
   const products = await dm.getProduct()
   const productAdd = await dm.deleteProduct(4)
   console.log(products)
   console.log('borrado', productAdd)
 })()
+ */

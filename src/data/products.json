@@ -1,38 +1,128 @@
 [
 	{
-		"title": "Camisa de Algodón",
-		"description": "Camisa de manga larga hecha de algodón orgánico",
-		"price": 29.99,
-		"thumbnail": "https://ejemplo.com/camisa.png",
-		"code": "CM_ALGODON_001",
+		"title": "Teléfono Móvil",
+		"description": "Teléfono móvil de última generación",
+		"price": 599.99,
+		"thumbnail": [
+			"https://ejemplo.com/telefono1.png",
+			"https://ejemplo.com/telefono2.png",
+			"https://ejemplo.com/telefono3.png"
+		],
+		"code": "TEL_MOVIL_005",
 		"stock": 100,
 		"id": 1
 	},
 	{
-		"title": "Zapatillas Deportivas",
-		"description": "Zapatillas ideales para entrenamientos intensivos",
-		"price": 49.99,
-		"thumbnail": "https://ejemplo.com/zapatillas.png",
-		"code": "ZP_DEPORTE_002",
-		"stock": 75,
+		"title": "Laptop Ultradelgada",
+		"description": "Laptop ultradelgada y potente para trabajo y entretenimiento",
+		"price": 1099.99,
+		"thumbnail": [
+			"https://ejemplo.com/laptop1.png",
+			"https://ejemplo.com/laptop2.png",
+			"https://ejemplo.com/laptop3.png"
+		],
+		"code": "LT_ULTRA_001",
+		"stock": 80,
 		"id": 2
 	},
 	{
-		"title": "Libreta de Notas",
-		"description": "Libreta con tapa dura y páginas rayadas",
-		"price": 9.99,
-		"thumbnail": "https://ejemplo.com/libreta.png",
-		"code": "LB_RAYADA_003",
-		"stock": 150,
+		"title": "Cámara DSLR Profesional",
+		"description": "Cámara DSLR de alta gama para fotógrafos profesionales",
+		"price": 1499.99,
+		"thumbnail": [
+			"https://ejemplo.com/camara1.png",
+			"https://ejemplo.com/camara2.png",
+			"https://ejemplo.com/camara3.png"
+		],
+		"code": "CM_PROF_002",
+		"stock": 25,
 		"id": 3
 	},
 	{
-		"title": "Reloj Inteligente",
-		"description": "Reloj inteligente con seguimiento de actividad y notificaciones",
-		"price": 79.99,
-		"thumbnail": "https://ejemplo.com/reloj.png",
-		"code": "RELOJ_SMART_004",
-		"stock": 50,
+		"title": "Teclado Mecánico para Gaming",
+		"description": "Teclado mecánico con retroiluminación RGB para jugadores",
+		"price": 89.99,
+		"thumbnail": [
+			"https://ejemplo.com/teclado1.png",
+			"https://ejemplo.com/teclado2.png",
+			"https://ejemplo.com/teclado3.png"
+		],
+		"code": "TEC_GAMING_003",
+		"stock": 60,
 		"id": 4
+	},
+	{
+		"title": "Bicicleta de Montaña",
+		"description": "Bicicleta todoterreno para rutas de montaña",
+		"price": 549.99,
+		"thumbnail": [
+			"https://ejemplo.com/bici1.png",
+			"https://ejemplo.com/bici2.png",
+			"https://ejemplo.com/bici3.png"
+		],
+		"code": "BC_MONT_004",
+		"stock": 35,
+		"id": 5
+	},
+	{
+		"title": "Smart TV 4K",
+		"description": "Televisor inteligente con resolución 4K",
+		"price": 799.99,
+		"thumbnail": [
+			"https://ejemplo.com/tv1.png",
+			"https://ejemplo.com/tv2.png",
+			"https://ejemplo.com/tv3.png"
+		],
+		"code": "TV_4K_005",
+		"stock": 45,
+		"id": 6
+	},
+	{
+		"title": "Altavoces Bluetooth",
+		"description": "Altavoces inalámbricos con calidad de sonido premium",
+		"price": 129.99,
+		"thumbnail": [
+			"https://ejemplo.com/altavoz1.png",
+			"https://ejemplo.com/altavoz2.png",
+			"https://ejemplo.com/altavoz3.png"
+		],
+		"code": "ALTA_BLUETOOTH_006",
+		"stock": 55,
+		"id": 7
+	},
+	{
+		"title": "Altavoces Bluetooth",
+		"description": "Altavoces inalámbricos con calidad de sonido premium",
+		"price": 129.99,
+		"thumbnail": [
+			"https://ejemplo.com/altavoz1.png",
+			"https://ejemplo.com/altavoz2.png",
+			"https://ejemplo.com/altavoz3.png"
+		],
+		"code": "ALTA_BLUETOOTH_006",
+		"stock": 55,
+		"id": 8
+	},
+	{
+		"title": "Impresora Multifuncional",
+		"description": "Impresora todo en uno para oficina o hogar",
+		"price": 199.99,
+		"thumbnail": [
+			"https://ejemplo.com/impresora1.png",
+			"https://ejemplo.com/impresora2.png",
+			"https://ejemplo.com/impresora3.png"
+		],
+		"code": "IMP_MULTIFUNC_007",
+		"stock": 30,
+		"id": 9
+	},
+	{
+		"title": "Impresora Multifuncional",
+		"description": "Impresora todo en uno para oficina o hogar",
+		"price": 199.99,
+		"thumbnail": [],
+		"code": "IMP_MULTIFUNC_007",
+		"stock": 30,
+		"id": 10
 	}
 ]

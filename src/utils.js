@@ -10,8 +10,8 @@ export const verifyProduct = (product) => {
     message.price = 'Price must be a Number'
   }
   if (product.thumbnail) {
-    if (typeof product.thumbnail !== 'string') {
-      message.thumbnail = 'Thumbnail must be a String'
+    if (Array.isArray(product.thumbnail) === false) {
+      message.thumbnail = 'Thumbnail must be a Array'
     }
   }
   if (typeof product.code !== 'string') {

@@ -1,5 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises'
-import { existsSync, stat } from 'node:fs'
+import { existsSync } from 'node:fs'
 
 export class ProductManager {
   #path // ocultar la propiedad

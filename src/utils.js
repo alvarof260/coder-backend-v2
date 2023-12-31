@@ -22,3 +22,26 @@ export const verifyProduct = (product) => {
   }
   return Object.keys(message).length > 0 ? message : null
 }
+
+export const verifyProductPartial = (product) => {
+  const message = {}
+  if (typeof product.title !== 'string' && product.title) {
+    message.title = 'Title must be a String'
+  }
+  if (typeof product.description !== 'string' && product.description) {
+    message.description = 'Description must be a String'
+  }
+  if (typeof product.price !== 'number' && product.price) {
+    message.price = 'Price must be a Number'
+  }
+  if (Array.isArray(product.thumbnail) === false && product.thumbnail) {
+    message.thumbnail = 'Thumbnail must be a Array'
+  }
+  if (typeof product.code !== 'string' && product.code) {
+    message.thumbnail = 'Code must be a String'
+  }
+  if (typeof product.stock !== 'number' && product.stock) {
+    message.stock = 'Stock must be a Number'
+  }
+  return Object.keys(message).length > 0 ? message : null
+}

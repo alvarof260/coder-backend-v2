@@ -37,10 +37,10 @@ router.post('/', async (req, res) => {
   try {
     const product = req.body // recibe el producto desde el body
     const verification = verifyProduct(product) // verifico errores de los valores ingresados
-    if (verification) return res.status(404).json({ status: 'error', error: verification }) // si tiene errores retorno los campos que tienen errores
+    if (verification) return res.status(400).json({ status: 'error', error: verification }) // si tiene errores retorno los campos que tienen errores
     const productAdd = await PM.addProduct(product) // si no tiene errores se agrega el producto
     if (!productAdd) return res.status(500).json({ status: 'error', error: 'Missing unfilled fields.' }) // si el producto le falta campos a completar retorna el error de campos sin completar
-    res.status(200).json({ status: 'sucess', payload: productAdd }) // si pasa todo las verificaciones se agrega el producto y retornamos el producto agregado
+    res.status(201).json({ status: 'sucess', payload: productAdd }) // si pasa todo las verificaciones se agrega el producto y retornamos el producto agregado
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error adding product.' }) // error si no se puede agregar el producto
   }
@@ -51,7 +51,7 @@ router.put('/:pid((\\d+))', async (req, res) => {
     const pid = parseInt(req.params.pid) // convierto en numero entero al parametro del id
     const data = req.body // recibe los datos que quiere actualizar desde el body
     const verification = verifyProductPartial(data) // verifica que los datos que se quiere actualizar cumpla con los tipos de datos
-    if (verification) return res.status(404).json({ status: 'error', error: verification }) // si tiene errores retorno los campos que tienen errores
+    if (verification) return res.status(400).json({ status: 'error', error: verification }) // si tiene errores retorno los campos que tienen errores
     const productUpdated = await PM.updateProduct(pid, data) // actualizo el producto
     if (!productUpdated) return res.status(404).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe el producto con el id que paso retorna el error de que no existe el producto
     return res.status(200).json({ status: 'sucess', payload: productUpdated }) // retorna el producto actualizado
@@ -62,10 +62,10 @@ router.put('/:pid((\\d+))', async (req, res) => {
 
 router.delete('/:pid((\\d+))', async (req, res) => {
   try {
-    const pid = parseInt(req.params.pid)
+    const pid = parseInt(req.params.pid) // convierto en numero entero al parametro del id
     const productDeleted = await PM.deleteProduct(pid)
-    if (!productDeleted) return res.status(404).json({ status: 'sucess', error: `Product not found by id: ${pid}.` })
-    return res.status(200).json({ status: 'sucess', payload: productDeleted })
+    if (!productDeleted) return res.status(404).json({ status: 'sucess', error: `Product not found by id: ${pid}.` }) // si no existe el producto con el id que paso retorna el error de que no existe el producto
+    return res.status(200).json({ status: 'sucess', payload: productDeleted }) // retorna el producto borrado
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error deleting product.' }) // error si no se puede agregar el producto
   }

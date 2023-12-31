@@ -1,10 +1,7 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
-/* import { ProductManager } from './product-manager.js'
 
-const PM = new ProductManager('./src/data/products.json') */
-
-export default class CartManager {
+export class CartManager {
   #path
   constructor (path) {
     this.#path = path
@@ -64,7 +61,6 @@ export default class CartManager {
     try {
       const carts = await this.#getCarts()
       const cartIndex = carts.findIndex(el => el.id === cartId)
-      console.log(cartIndex)
       if (cartIndex === -1) {
         console.error('Cart not found.')
         return
@@ -72,7 +68,6 @@ export default class CartManager {
 
       const cart = carts[cartIndex]
       const prodIndex = cart.products.findIndex(el => el.product === prodId)
-      console.log(prodIndex)
       if (prodIndex > -1) {
         cart.products[prodIndex].quantity++
       } else {

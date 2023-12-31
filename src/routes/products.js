@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { ProductManager } from '../fs/product-manager.js'
+import { verifyProduct } from '../utils.js'
 
 const PM = new ProductManager('./src/data/products.json') // inicializo la clase de Product Manager.
 const router = Router() // inicio el router
@@ -35,12 +36,13 @@ router.get('/:pid((\\d+))', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const product = req.body
-    console.log(product)
+    const verification = verifyProduct(product)
+    if (verification) return res.status(404).json({ status: 'error', error: verification })
     const productAdd = await PM.addProduct(product)
     if (!productAdd) return res.status(500).json({ status: 'error', error: 'Missing unfilled fields.' })
     res.status(200).json({ status: 'sucess', payload: productAdd })
   } catch (error) {
-    return res.status(500).json({ status: 'error', error: 'Error add product.' }) // error si no se puede agregar el producto
+    return res.status(500).json({ status: 'error', error: 'Error adding product.' }) // error si no se puede agregar el producto
   }
 })
 

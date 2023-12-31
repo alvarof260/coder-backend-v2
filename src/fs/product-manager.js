@@ -27,8 +27,8 @@ export class ProductManager {
   getProductByID = async (id) => {
     const products = await this.getProduct()
     const product = products.find(el => el.id === id) // busco el id, si este id existe, lo guardo en una variable
-    if (typeof product === 'undefined') return { sucess: false, error: `No se encontro el producto con id: ${id}.` } // no existe el id, devuelvo el error
-    return { sucess: true, payload: product } // devuelvo el producto que se pidio
+    if (typeof product === 'undefined') return // no existe el id, devuelvo el error
+    return product // devuelvo el producto que se pidio
   }
 
   addProduct = async (product) => {

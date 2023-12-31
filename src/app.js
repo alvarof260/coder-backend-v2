@@ -3,6 +3,7 @@ import productRouter from './routes/products.js'
 
 const app = express()
 
+app.use(express.json())
 app.use(express.urlencoded({ extended: true })) // para poder trabajar con datos complejos con url.
 
 app.get('/', (req, res) => {

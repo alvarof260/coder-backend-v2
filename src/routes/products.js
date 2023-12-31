@@ -25,10 +25,20 @@ router.get('/:pid((\\d+))', async (req, res) => {
   try {
     const pid = parseInt(req.params.pid) // convierto en numero entero al parametro del id
     const product = await PM.getProductByID(pid) // busco el producto
-    if (!product) return res.status(500).json({ status: 'error', error: `Product not found by id:${pid}.` }) // si no existe devuelvo error
+    if (!product) return res.status(500).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe devuelvo error
     return res.status(200).json({ status: 'sucess', payload: product }) // mostrar el producto filtrado
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error fetching product.' }) // error si no se puede obtener el producto
+  }
+})
+
+router.post('/', async (req, res) => {
+  try {
+    const product = req.body
+    await add
+    console.log(product)
+  } catch (error) {
+
   }
 })
 

@@ -26,7 +26,7 @@ router.get('/:pid((\\d+))', async (req, res) => {
   try {
     const pid = parseInt(req.params.pid) // convierto en numero entero al parametro del id
     const product = await PM.getProductByID(pid) // busco el producto
-    if (!product) return res.status(500).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe devuelvo error
+    if (!product) return res.status(404).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe devuelvo error
     return res.status(200).json({ status: 'sucess', payload: product }) // mostrar el producto filtrado
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error fetching product.' }) // error si no se puede obtener el producto
@@ -53,7 +53,7 @@ router.put('/:pid((\\d+))', async (req, res) => {
     const verification = verifyProductPartial(data) // verifica que los datos que se quiere actualizar cumpla con los tipos de datos
     if (verification) return res.status(404).json({ status: 'error', error: verification }) // si tiene errores retorno los campos que tienen errores
     const productUpdated = await PM.updateProduct(pid, data) // actualizo el producto
-    if (!productUpdated) return res.status(500).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe el producto con el id que paso retorna el error de que no existe el producto
+    if (!productUpdated) return res.status(404).json({ status: 'error', error: `Product not found by id: ${pid}.` }) // si no existe el producto con el id que paso retorna el error de que no existe el producto
     return res.status(200).json({ status: 'sucess', payload: productUpdated }) // retorna el producto actualizado
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error updating product.' }) // error si no se puede agregar el producto
@@ -61,7 +61,14 @@ router.put('/:pid((\\d+))', async (req, res) => {
 })
 
 router.delete('/:pid((\\d+))', async (req, res) => {
-
+  try {
+    const pid = parseInt(req.params.pid)
+    const productDeleted = await PM.deleteProduct(pid)
+    if (!productDeleted) return res.status(404).json({ status: 'sucess', error: `Product not found by id: ${pid}.` })
+    return res.status(200).json({ status: 'sucess', payload: productDeleted })
+  } catch (error) {
+    return res.status(500).json({ status: 'error', error: 'Error deleting product.' }) // error si no se puede agregar el producto
+  }
 })
 
 export default router

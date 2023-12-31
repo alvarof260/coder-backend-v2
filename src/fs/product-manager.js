@@ -38,10 +38,10 @@ export class ProductManager {
       const statusValue = status || true
       if (!title || !description || !price || !code || !stock) return // verificacion de datos, en el cual faltan datos retorna un error
       const products = await this.getProduct() // obtengo el array de producto para trabajar
-      const id = this.generateID(products) // genero el id
+      const id = this.#generateID(products) // genero el id
       const productToAdd = { title, description, price, thumbnail: thumbnailValue, code, stock, status: statusValue, id } // creo el objeto del producto
       products.push(productToAdd) // agrego al array para luego pasarlo al archivo
-      await this.atomicWriteFile(products)
+      await this.#atomicWriteFile(products)
       return productToAdd
     } catch (err) {
       console.error('Error al añadir el producto al archivo: ', err)
@@ -50,30 +50,38 @@ export class ProductManager {
   }
 
   updateProduct = async (itemId, dataUpdate) => {
-    const products = await this.getProduct() // recibo los productos
-    const productsUpdated = products.map(el => { // voy por todos los objetos del array y busco cual es el id que busco luego agrego los datos actualizado, si no es el que busco deja todo igual
-      if (el.id === itemId) return { ...el, ...dataUpdate }
-      else return el
-    })
-    await this.atomicWriteFile(productsUpdated)
-    const productUpdate = await this.getProductByID(itemId)
-    return productUpdate
+    try {
+      const products = await this.getProduct() // recibo los productos
+      const productsUpdated = products.map(el => { // voy por todos los objetos del array y busco cual es el id que busco luego agrego los datos actualizado, si no es el que busco deja todo igual
+        if (el.id === itemId) return { ...el, ...dataUpdate }
+        else return el
+      })
+      await this.#atomicWriteFile(productsUpdated)
+      const productUpdate = await this.getProductByID(itemId)
+      return productUpdate
+    } catch (err) {
+      console.error('Error updating product:', err)
+    }
   }
 
   deleteProduct = async (itemId) => {
-    const products = await this.getProduct()
-    const productExist = products.some(el => el.id === itemId)
-    if (!productExist) return
-    const productsUpdate = products.filter(el => el.id !== itemId)
-    await this.atomicWriteFile(productsUpdate)
-    return productsUpdate
+    try {
+      const products = await this.getProduct()
+      const productExist = products.some(el => el.id === itemId)
+      if (!productExist) return
+      const productsUpdate = products.filter(el => el.id !== itemId)
+      await this.#atomicWriteFile(productsUpdate)
+      return productsUpdate
+    } catch (err) {
+      console.error('Error deleting product:', err)
+    }
   }
 
-  generateID = (products) => {
+  #generateID = (products) => {
     return (products.length === 0) ? 1 : products[products.length - 1].id + 1
   }
 
-  atomicWriteFile = async (products) => {
+  #atomicWriteFile = async (products) => {
     try {
       // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
       await writeFile(this.#path, JSON.stringify(products, null, '\t'))

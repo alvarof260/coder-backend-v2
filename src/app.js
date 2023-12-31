@@ -11,5 +11,6 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/products', productRouter) // trabajo con el router de productos
+app.use('/api/carts', productRouter)
 
 app.listen(8080, () => console.log('http://localhost:8080'))

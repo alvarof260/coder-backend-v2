@@ -25,5 +25,14 @@
 		"code": "LB_RAYADA_003",
 		"stock": 150,
 		"id": 3
+	},
+	{
+		"title": "Reloj Inteligente",
+		"description": "Reloj inteligente con seguimiento de actividad y notificaciones",
+		"price": 79.99,
+		"thumbnail": "https://ejemplo.com/reloj.png",
+		"code": "RELOJ_SMART_004",
+		"stock": 50,
+		"id": 4
 	}
 ]

@@ -35,10 +35,12 @@ router.get('/:pid((\\d+))', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const product = req.body
-    await add
     console.log(product)
+    const productAdd = await PM.addProduct(product)
+    if (!productAdd) return res.status(500).json({ status: 'error', error: 'Missing unfilled fields.' })
+    res.status(200).json({ status: 'sucess', payload: productAdd })
   } catch (error) {
-
+    return res.status(500).json({ status: 'error', error: 'Error add product.' }) // error si no se puede agregar el producto
   }
 })
 

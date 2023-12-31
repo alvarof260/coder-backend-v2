@@ -34,13 +34,13 @@ export class ProductManager {
   addProduct = async (product) => {
     try {
       const { title, description, price, thumbnail, code, stock } = product // recibo los datos del producto a añadir
-      if (!title || !description || !price || !thumbnail || !code || !stock) return { sucess: false, error: 'Faltan datos al productos.' } // verificacion de datos, en el cual faltan datos retorna un error
+      if (!title || !description || !price || !thumbnail || !code || !stock) return // verificacion de datos, en el cual faltan datos retorna un error
       const products = await this.getProduct() // obtengo el array de producto para trabajar
       const id = this.generateID(products) // genero el id
       const productToAdd = { title, description, price, thumbnail, code, stock, id } // creo el objeto del producto
       products.push(productToAdd) // agrego al array para luego pasarlo al archivo
       await this.atomicWriteFile(products)
-      return { sucess: true, payload: productToAdd }
+      return productToAdd
     } catch (err) {
       console.error('Error al añadir el producto al archivo: ', err)
       throw new Error('No se pudo añadir el producto.')

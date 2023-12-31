@@ -62,9 +62,11 @@ export class ProductManager {
 
   deleteProduct = async (itemId) => {
     const products = await this.getProduct()
+    const productExist = products.some(el => el.id === itemId)
+    if (!productExist) return
     const productsUpdate = products.filter(el => el.id !== itemId)
     await this.atomicWriteFile(productsUpdate)
-    return { sucess: true, payload: productsUpdate }
+    return productsUpdate
   }
 
   generateID = (products) => {

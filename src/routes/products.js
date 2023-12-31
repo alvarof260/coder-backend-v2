@@ -60,4 +60,8 @@ router.put('/:pid((\\d+))', async (req, res) => {
   }
 })
 
+router.delete('/:pid((\\d+))', async (req, res) => {
+
+})
+
 export default router

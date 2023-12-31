@@ -10,6 +10,7 @@
 		],
 		"code": "TEL_MOVIL_005",
 		"stock": 100,
+		"status": true,
 		"id": 1
 	},
 	{
@@ -23,6 +24,7 @@
 		],
 		"code": "LT_ULTRA_001",
 		"stock": 80,
+		"status": true,
 		"id": 2
 	},
 	{
@@ -36,6 +38,7 @@
 		],
 		"code": "CM_PROF_002",
 		"stock": 25,
+		"status": true,
 		"id": 3
 	},
 	{
@@ -49,6 +52,7 @@
 		],
 		"code": "TEC_GAMING_003",
 		"stock": 60,
+		"status": true,
 		"id": 4
 	},
 	{
@@ -62,6 +66,7 @@
 		],
 		"code": "BC_MONT_004",
 		"stock": 35,
+		"status": false,
 		"id": 5
 	},
 	{
@@ -75,6 +80,7 @@
 		],
 		"code": "TV_4K_005",
 		"stock": 45,
+		"status": true,
 		"id": 6
 	},
 	{
@@ -88,20 +94,8 @@
 		],
 		"code": "ALTA_BLUETOOTH_006",
 		"stock": 55,
+		"status": true,
 		"id": 7
-	},
-	{
-		"title": "Altavoces Bluetooth",
-		"description": "Altavoces inalámbricos con calidad de sonido premium",
-		"price": 129.99,
-		"thumbnail": [
-			"https://ejemplo.com/altavoz1.png",
-			"https://ejemplo.com/altavoz2.png",
-			"https://ejemplo.com/altavoz3.png"
-		],
-		"code": "ALTA_BLUETOOTH_006",
-		"stock": 55,
-		"id": 8
 	},
 	{
 		"title": "Impresora Multifuncional",
@@ -114,15 +108,35 @@
 		],
 		"code": "IMP_MULTIFUNC_007",
 		"stock": 30,
+		"status": true,
+		"id": 8
+	},
+	{
+		"title": "Auriculares Inalámbricos",
+		"description": "Auriculares inalámbricos con cancelación de ruido",
+		"price": 129.99,
+		"thumbnail": [
+			"https://ejemplo.com/auriculares1.png",
+			"https://ejemplo.com/auriculares2.png",
+			"https://ejemplo.com/auriculares3.png"
+		],
+		"code": "AUR_INALAM_009",
+		"stock": 40,
+		"status": true,
 		"id": 9
 	},
 	{
-		"title": "Impresora Multifuncional",
-		"description": "Impresora todo en uno para oficina o hogar",
-		"price": 199.99,
-		"thumbnail": [],
-		"code": "IMP_MULTIFUNC_007",
-		"stock": 30,
+		"title": "Silla Ergonómica",
+		"description": "Silla de oficina ergonómica para mayor comodidad",
+		"price": 159.99,
+		"thumbnail": [
+			"https://ejemplo.com/silla1.png",
+			"https://ejemplo.com/silla2.png",
+			"https://ejemplo.com/silla3.png"
+		],
+		"code": "SILLA_ERGO_008",
+		"stock": 20,
+		"status": true,
 		"id": 10
 	}
 ]

@@ -21,10 +21,21 @@ app.get('/products', async (req, res) => {
       const productsLimited = response.slice(0, limitValue) // limito el array segun el numero de productos que desea ver el usuario
       return res.status(200).json({ status: 'sucess', payload: productsLimited }) // devuelvo el array
     } else {
-      return res.status(500).json({ status: 'error', error: 'Invalid limit parameter' }) // si no es un numero el limitValue se devuelve un error de valor invalido
+      return res.status(500).json({ status: 'error', error: 'Invalid limit parameter.' }) // si no es un numero el limitValue se devuelve un error de valor invalido
     }
   } catch (error) {
-    return res.status(500).json({ status: 'error', error: 'Error fetching products' }) // error si no se puede obtener los productos
+    return res.status(500).json({ status: 'error', error: 'Error fetching products.' }) // error si no se puede obtener los productos
+  }
+})
+
+app.get('/products/:pid((\\d+))', async (req, res) => {
+  try {
+    const pid = parseInt(req.params.pid) // convierto en numero entero al parametro del id
+    const product = await PM.getProductByID(pid) // busco el producto
+    if (!product) return res.status(500).json({ status: 'error', error: `Product not found by id:${pid}.` }) // si no existe devuelvo error
+    return res.status(200).json({ status: 'sucess', payload: product }) // mostrar el producto filtrado
+  } catch (error) {
+    return res.status(500).json({ status: 'error', error: 'Error fetching product.' }) // error si no se puede obtener el producto
   }
 })
 

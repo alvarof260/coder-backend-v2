@@ -1,0 +1,37 @@
+<header>
+    <h1>Coder Shop</h1>
+</header>
+<main>
+    <section>
+        <h2>List of Products</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Code</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr>
+                    <td>{{this.title}}</td>
+                    <td>{{this.description}}</td>
+                    <td>${{this.price}}</td>
+                    <td>{{this.code}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.status}}</td>
+                    <td>{{this.id}}</td>
+                </tr>   
+                {{/each }}
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer>
+    <small>copyright © 2024  - Alvaro Estanislao Figueroa </small>
+</footer>

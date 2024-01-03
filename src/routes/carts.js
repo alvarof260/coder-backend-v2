@@ -4,6 +4,7 @@ import { CartManager } from '../fs/cart-manager.js'
 const router = Router()
 const CM = new CartManager('./src/data/carts.json')
 
+// crear el carrito
 router.post('/', async (req, res) => {
   try {
     const cartCreated = await CM.createCart()
@@ -13,6 +14,7 @@ router.post('/', async (req, res) => {
   }
 })
 
+// Obtener el carrito por su ID
 router.get('/:cid((\\d+))', async (req, res) => {
   try {
     const cid = parseInt(req.params.cid)
@@ -24,6 +26,7 @@ router.get('/:cid((\\d+))', async (req, res) => {
   }
 })
 
+// Actualizar los productos que estan en el carrito
 router.put('/:cid((\\d+))/product/:pid((\\d+))', async (req, res) => {
   try {
     const cid = parseInt(req.params.cid)

@@ -2,57 +2,87 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 
 export class ProductManager {
-  #path // ocultar la propiedad
+  #path
   constructor (path) {
-    this.#path = path // guardar ruta donde se guarda los productos
+    this.#path = path
     this.#init() // inicializar la ruta donde se guarda los productos
   }
 
+  // Inicializa el archivo de productos si no existe
   #init = async () => {
-    if (!existsSync(this.#path)) {
-      await writeFile(this.#path, JSON.stringify([], null, '\t'))
+    try {
+      if (!existsSync(this.#path)) {
+        await writeFile(this.#path, JSON.stringify([], null, '\t'))
+      }
+    } catch (err) {
+      console.error('Error initializing file: ', err)
+      throw new Error('Unable to initialize the file.')
     }
   }
 
+  // Obtiene todos los productos del archivo
   getProduct = async () => {
     try {
-      const response = await readFile(this.#path, 'utf-8') // recibo los datos que tiene el archivo como json stringify
-      const products = JSON.parse(response) // paso a tenerlo parseado para poder trabajar con el array
+      const response = await readFile(this.#path, 'utf-8')
+      const products = JSON.parse(response)
       return products
     } catch (err) {
-      console.error('Error al leer el archivo: ', err) // manejo los errores
+      console.error('Error reading file: ', err)
+      throw new Error('Unable to read the file.')
     }
   }
 
+  // Obtiene un producto por su ID
   getProductByID = async (id) => {
-    const products = await this.getProduct()
-    const product = products.find(el => el.id === id) // busco el id, si este id existe, lo guardo en una variable
-    if (typeof product === 'undefined') return // no existe el id, devuelvo el error
-    return product // devuelvo el producto que se pidio
+    try {
+      const products = await this.getProduct()
+      const product = products.find(el => el.id === id)
+      if (!product) return
+      return product
+    } catch (err) {
+      console.error('Error finding product:', err)
+      throw new Error('Unable to find the product.')
+    }
   }
 
+  // Agrega un nuevo producto al archivo
   addProduct = async (product) => {
     try {
-      const { title, description, price, thumbnail, code, stock, status } = product // recibo los datos del producto a añadir
+      // Validación de datos del producto
+      const { title, description, price, thumbnail, code, stock, status } = product
       const thumbnailValue = thumbnail || []
       const statusValue = status || true
-      if (!title || !description || !price || !code || !stock) return // verificacion de datos, en el cual faltan datos retorna un error
-      const products = await this.getProduct() // obtengo el array de producto para trabajar
-      const id = this.#generateID(products) // genero el id
-      const productToAdd = { title, description, price, thumbnail: thumbnailValue, code, stock, status: statusValue, id } // creo el objeto del producto
-      products.push(productToAdd) // agrego al array para luego pasarlo al archivo
+      if (!title || !description || !price || !code || !stock) return
+      // Obtención de los productos existentes y generación de ID
+      const products = await this.getProduct()
+      const id = this.#generateID(products)
+      // Creación del nuevo producto
+      const productToAdd = {
+        title,
+        description,
+        price,
+        thumbnail: thumbnailValue,
+        code,
+        stock,
+        status: statusValue,
+        id
+      }
+      // Agregar el nuevo producto y escribir en el archivo
+      products.push(productToAdd)
       await this.#atomicWriteFile(products)
       return productToAdd
     } catch (err) {
-      console.error('Error al añadir el producto al archivo: ', err)
-      throw new Error('No se pudo añadir el producto.')
+      console.error('Error adding product:', err)
+      throw new Error('Unable to add the product.')
     }
   }
 
+  // Actualiza un producto existente
   updateProduct = async (itemId, dataUpdate) => {
     try {
-      const products = await this.getProduct() // recibo los productos
-      const productsUpdated = products.map(el => { // voy por todos los objetos del array y busco cual es el id que busco luego agrego los datos actualizado, si no es el que busco deja todo igual
+      const products = await this.getProduct()
+      // Actualización de los datos del producto
+      const productsUpdated = products.map(el => {
         if (el.id === itemId) return { ...el, ...dataUpdate }
         else return el
       })
@@ -61,9 +91,11 @@ export class ProductManager {
       return productUpdate
     } catch (err) {
       console.error('Error updating product:', err)
+      throw new Error('Unable to update the product.')
     }
   }
 
+  // Elimina un producto por su ID
   deleteProduct = async (itemId) => {
     try {
       const products = await this.getProduct()
@@ -74,20 +106,22 @@ export class ProductManager {
       return productsUpdate
     } catch (err) {
       console.error('Error deleting product:', err)
+      throw new Error('Unable to delete the product.')
     }
   }
 
+  // Genera un nuevo ID para un producto
   #generateID = (products) => {
     return (products.length === 0) ? 1 : products[products.length - 1].id + 1
   }
 
+  // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
   #atomicWriteFile = async (products) => {
     try {
-      // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
       await writeFile(this.#path, JSON.stringify(products, null, '\t'))
     } catch (err) {
-      console.error('Error al escribir en el archivo: ', err)
-      throw new Error('No se pudo escribir en el archivo.') // Propagar el error para un manejo superior
+      console.error('Error writing to file:', err)
+      throw new Error('Unable to write to the file.')
     }
   }
 }

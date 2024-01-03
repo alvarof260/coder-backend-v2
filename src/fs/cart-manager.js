@@ -8,32 +8,46 @@ export class CartManager {
     this.#init()
   }
 
+  // Inicializa el archivo de productos si no existe
   #init = async () => {
-    if (!existsSync(this.#path)) {
-      await writeFile(this.#path, JSON.stringify([], null, '\t'))
+    try {
+      if (!existsSync(this.#path)) {
+        await writeFile(this.#path, JSON.stringify([], null, '\t'))
+      }
+    } catch (err) {
+      console.error('Error initializing file: ', err)
+      throw new Error('Unable to initialize the file.')
     }
   }
 
+  // Genera un nuevo ID para un carrito
   #generateID = (carts) => {
     return (carts.length === 0) ? 1 : carts[carts.length - 1].id + 1
   }
 
+  // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
   #atomicWriteFile = async (carts) => {
     try {
-      // Realizar escritura de manera "atómica" para garantizar la consistencia de los datos
       await writeFile(this.#path, JSON.stringify(carts, null, '\t'))
     } catch (err) {
-      console.error('Error writing DB file.', err)
-      throw new Error('No se pudo escribir en el archivo.') // Propagar el error para un manejo superior
+      console.error('Error writing to file:', err)
+      throw new Error('Unable to write to the file.')
     }
   }
 
+  // Obtiene todos los carritos del archivo
   #getCarts = async () => {
-    const data = await readFile(this.#path, 'utf-8')
-    const carts = JSON.parse(data)
-    return carts
+    try {
+      const data = await readFile(this.#path, 'utf-8')
+      const carts = JSON.parse(data)
+      return carts
+    } catch (err) {
+      console.error('Error reading file: ', err)
+      throw new Error('Unable to read the file.')
+    }
   }
 
+  // Crea y agrega un nuevo carrito al archivo
   createCart = async () => {
     try {
       const carts = await this.#getCarts()
@@ -43,9 +57,11 @@ export class CartManager {
       return cartToAdd
     } catch (error) {
       console.error('Error creating cart.')
+      throw new Error('Unable to create to the file')
     }
   }
 
+  // Obtiene un carrito por su ID
   getProductsFromCart = async (cartId) => {
     try {
       const carts = await this.#getCarts()
@@ -54,20 +70,26 @@ export class CartManager {
       return cart
     } catch (error) {
       console.error('Error fetching carts.')
+      throw new Error('Unable to create to the file')
     }
   }
 
+  // Agrega un producto al carrito
   addProductFromCart = async (cartId, prodId) => {
     try {
       const carts = await this.#getCarts()
-      const cartIndex = carts.findIndex(el => el.id === cartId)
+      const cartIndex = carts.findIndex(el => el.id === cartId) // busca por la posicion en el array si existe o no el carrito
       if (cartIndex === -1) {
         console.error('Cart not found.')
         return
       }
 
-      const cart = carts[cartIndex]
+      const cart = carts[cartIndex] // obtiene el carrito para poder agregar los productos
       const prodIndex = cart.products.findIndex(el => el.product === prodId)
+      /*
+      si ya existe el producto en el array de productos se le suma 1 a la cantidad
+      y si no existe se agrega el producto con cantidad 1
+      */
       if (prodIndex > -1) {
         cart.products[prodIndex].quantity++
       } else {
@@ -76,13 +98,8 @@ export class CartManager {
       await this.#atomicWriteFile(carts)
       return cart
     } catch (error) {
-      console.error('Error fetching carts.')
+      console.error('Error adding product to cart.')
+      throw new Error('Unable to add product to the file')
     }
   }
 }
-
-/* (async () => {
-  const CM = new CartManager('./src/data/carts.json')
-  const cart = await CM.addProductFromCart(1, 4)
-  console.log(cart)
-})() */

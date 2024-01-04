@@ -21,7 +21,7 @@ export class ProductManager {
   }
 
   // Obtiene todos los productos del archivo
-  getProduct = async () => {
+  getProducts = async () => {
     try {
       const response = await readFile(this.#path, 'utf-8')
       const products = JSON.parse(response)
@@ -35,7 +35,7 @@ export class ProductManager {
   // Obtiene un producto por su ID
   getProductByID = async (id) => {
     try {
-      const products = await this.getProduct()
+      const products = await this.getProducts()
       const product = products.find(el => el.id === id)
       if (!product) return
       return product
@@ -54,7 +54,7 @@ export class ProductManager {
       const statusValue = status || true
       if (!title || !description || !price || !code || !stock) return
       // Obtención de los productos existentes y generación de ID
-      const products = await this.getProduct()
+      const products = await this.getProducts()
       const id = this.#generateID(products)
       // Creación del nuevo producto
       const productToAdd = {
@@ -80,7 +80,7 @@ export class ProductManager {
   // Actualiza un producto existente
   updateProduct = async (itemId, dataUpdate) => {
     try {
-      const products = await this.getProduct()
+      const products = await this.getProducts()
       // Actualización de los datos del producto
       const productsUpdated = products.map(el => {
         if (el.id === itemId) return { ...el, ...dataUpdate }
@@ -98,7 +98,7 @@ export class ProductManager {
   // Elimina un producto por su ID
   deleteProduct = async (itemId) => {
     try {
-      const products = await this.getProduct()
+      const products = await this.getProducts()
       const productExist = products.some(el => el.id === itemId)
       if (!productExist) return
       const productsUpdate = products.filter(el => el.id !== itemId)

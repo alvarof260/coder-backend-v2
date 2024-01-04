@@ -71,6 +71,72 @@ section{
     align-items: center;
 }
 
+
+form {
+    width: 100%;
+    max-width: 480px;
+}
+
+fieldset{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    border: #faae2b 2px solid;
+    gap: 15px;
+    padding: 15px 0;
+}
+
+legend{
+    color: #00473e;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+label{
+   width: 100%;
+   max-width: 350px;
+   display: flex;
+   align-items: center;
+   font-size: 16px;
+   font-weight: 500;
+   color: #475d5b;
+}
+
+label input{
+    margin-left: 10px;
+    flex:1;
+    width: 150px;
+}
+
+input{
+    padding: 10px 5px;
+    color: #475d5b09;
+    font-size: 12px;
+    font-weight: 400;
+    border: #faae2b 2px solid;
+    border-radius: .2rem;
+}
+
+form button {
+    width: 100%;
+    padding: 10px 5px;
+    background-color: #faae2b;
+    color: #00473e;
+    font-size: 20px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+form button:focus, form button:hover {
+    background-color: #fa5246;
+    color: #f2f7f5;
+}
+
+
+
 footer {
     display: flex;
     flex-flow: row nowrap;

@@ -1,11 +1,15 @@
 import express from 'express'
-import { __dirname } from './utils.js'
 import handlebars from 'express-handlebars'
+import { Server } from 'socket.io'
+
+import { __dirname } from './utils.js'
 import productsRouter from './routes/products.js'
 import cartsRouter from './routes/carts.js'
 import viewsRouter from './routes/views.js'
 
 const app = express()
+const httpServer = app.listen(8080, () => console.log('http://localhost:8080'))
+const socketServer = new Server(httpServer)
 
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
@@ -19,4 +23,9 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/products', viewsRouter)
 
-app.listen(8080, () => console.log('http://localhost:8080'))
+socketServer.on('connection', socketClient => {
+  console.log('New Client connected')
+  socketClient.on('listProductUpdate', (data) => {
+    socketServer.emit('listProduct', data)
+  })
+})

@@ -109,10 +109,30 @@ label input{
     width: 150px;
 }
 
+label select{
+    margin-left: 10px;
+    flex:1;
+    width: 150px;
+}
+
 input{
     padding: 10px 5px;
-    color: #475d5b09;
-    font-size: 12px;
+    color: #475d5b;
+    font-size: 14px;
+    font-weight: 400;
+    border: #faae2b 2px solid;
+    border-radius: .2rem;
+}
+
+input::placeholder{
+    color: #475d5b60;
+    font-size: 14px;
+}
+
+select{
+    padding: 10px 5px;
+    color: #475d5b;
+    font-size: 14px;
     font-weight: 400;
     border: #faae2b 2px solid;
     border-radius: .2rem;

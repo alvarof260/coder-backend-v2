@@ -9,7 +9,7 @@ const router = Router()
 // Obtener todos los productos o limitar la lista de productos
 router.get('/', async (req, res) => {
   try {
-    const response = await PM.getProduct()
+    const response = await PM.getProducts()
     const { limit } = req.query
     if (!limit) return res.status(200).json({ status: 'sucess', payload: response })
     const limitValue = parseInt(limit)

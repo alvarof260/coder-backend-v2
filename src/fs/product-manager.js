@@ -55,6 +55,8 @@ export class ProductManager {
       if (!title || !description || !price || !code || !stock) return
       // Obtención de los productos existentes y generación de ID
       const products = await this.getProducts()
+      const found = this.#verifyCode(products, code)
+      if (found) return
       const id = this.#generateID(products)
       // Creación del nuevo producto
       const productToAdd = {
@@ -109,6 +111,8 @@ export class ProductManager {
       throw new Error('Unable to delete the product.')
     }
   }
+
+  #verifyCode = (products, newCode) => { return products.find(el => el.code === newCode) }
 
   // Genera un nuevo ID para un producto
   #generateID = (products) => {

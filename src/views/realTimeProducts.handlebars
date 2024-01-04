@@ -22,7 +22,10 @@
                     <input type="number" name="stock" id="stock" placeholder="Stock of Product">
                 </label>
                 <label> Status:
-                    <input type="number" name="status" id="status" placeholder="Status of Product">
+                    <select name="status" id="status">
+                        <option value="true">True</option>
+                        <option value="false">False</option>
+                    </select>
                 </label>
             </fieldset>
                 <button id="createProduct">Create a Product</button>
@@ -40,10 +43,9 @@
                     <th>Code</th>
                     <th>Stock</th>
                     <th>Status</th>
-                    <th>ID</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="list">
                 {{#each products}}
                 <tr>
                     <td><button onclick="deleteProduct({{this.id}})">Eliminar</button></td>
@@ -52,7 +54,11 @@
                     <td>${{this.price}}</td>
                     <td>{{this.code}}</td>
                     <td>{{this.stock}}</td>
-                    <td>{{this.status}}</td>
+                    {{#if status}}
+                        <td>✅</td>
+                    {{else}}
+                        <td>❌</td>
+                    {{/if}}
                 </tr>   
                 {{/each }}
             </tbody>
@@ -62,3 +68,6 @@
 <footer>
     <small>copyright © 2024  - Alvaro Estanislao Figueroa </small>
 </footer>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>

@@ -85,7 +85,7 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
     const productUpdated = await productsModel.findOneAndUpdate({ _id: pid }, data, { returnDocument: 'after' })
     if (productUpdated) {
       // Si productUpdated existe, significa que se actualizó correctamente
-      return res.status(201).json({ status: 'success', payload: productUpdated })
+      return res.status(200).json({ status: 'success', payload: productUpdated })
     } else {
       // Si productUpdated es null, significa que no se encontró el producto para actualizar
       return res.status(404).json({ status: 'error', error: 'Product not found or not updated' })
@@ -108,6 +108,19 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 
 // Eliminar un producto de la base de datos
 router.delete('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const pid = req.params.pid
+    const productDeleted = await productsModel.findByIdAndDelete({ _id: pid }, { returnDocument: 'after' })
+    if (productDeleted) {
+      // Si productDeleted existe, significa que se eliminó correctamente
+      return res.status(200).json({ status: 'success', payload: productDeleted })
+    } else {
+      // Si productDeleted es null, significa que no se encontró el producto para eliminar
+      return res.status(404).json({ status: 'error', error: 'Product not found or not deleted' })
+    }
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
   /* try {
     const pid = parseInt(req.params.pid)
     const productDeleted = await PM.deleteProduct(pid)

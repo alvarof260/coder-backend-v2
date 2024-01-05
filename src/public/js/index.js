@@ -73,7 +73,7 @@ socketClient.on('listProduct', (data) => {
   tbody.innerHTML = ' '
   for (const product of data) {
     const tr = document.createElement('tr')
-    const status = product.status ? '✅' : '❌'
+    const status = product.status === true ? '✅' : '❌'
     tr.innerHTML =
     `
     <td><button onclick="deleteProduct(${product.id})">Eliminar</button></td>

@@ -51,7 +51,7 @@ export class ProductManager {
       // Validación de datos del producto
       const { title, description, price, thumbnail, code, stock, status } = product
       const thumbnailValue = thumbnail || []
-      const statusValue = status || true
+      const statusValue = status
       if (!title || !description || !price || !code || !stock) return
       // Obtención de los productos existentes y generación de ID
       const products = await this.getProducts()

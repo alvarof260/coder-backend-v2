@@ -138,5 +138,15 @@
 		"stock": 20,
 		"status": true,
 		"id": 10
+	},
+	{
+		"title": "prod",
+		"description": "prod",
+		"price": 4324,
+		"thumbnail": [],
+		"code": "EJ_EJEMPLO_001",
+		"stock": 42532,
+		"status": false,
+		"id": 11
 	}
 ]

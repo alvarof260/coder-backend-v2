@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { Router } from 'express'
 import { Types } from 'mongoose'
 import { cartsModel } from '../dao/models/carts.js'

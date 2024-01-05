@@ -7,13 +7,13 @@ const router = Router()
 
 router.get('/', async (req, res) => {
   // const products = await PM.getProducts()
-  const products = await productsModel.find()
+  const products = await productsModel.find().lean().exec()
   res.render('home', { title: 'CoderShop | Products', style: 'products.css', products })
 })
 
 router.get('/realtimeproducts', async (req, res) => {
   // const products = await PM.getProducts()
-  const products = await productsModel.find()
+  const products = await productsModel.find().lean().exec()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })
 })
 

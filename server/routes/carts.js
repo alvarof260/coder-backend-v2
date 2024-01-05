@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { cartsModel } from '../dao/models/carts.js'
 // import { CartManager } from '../dao/fs/cart-manager.js'
 
 const router = Router()
@@ -6,6 +7,12 @@ const router = Router()
 
 // crear el carrito
 router.post('/', async (req, res) => {
+  try {
+    const cart = await cartsModel.create()
+    res.status(201).json({ status: 'success', payload: cart })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
 /*   try {
     const cartCreated = await CM.createCart()
     return res.status(201).json({ status: 'sucess', payload: cartCreated })
@@ -15,7 +22,14 @@ router.post('/', async (req, res) => {
 })
 
 // Obtener el carrito por su ID
-router.get('/:cid((\\d+))', async (req, res) => {
+router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const cart = await cartsModel.findById(cid)
+    res.status(200).json({ status: 'success', payload: cart })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
 /*   try {
     const cid = parseInt(req.params.cid)
     const cart = await CM.getProductsFromCart(cid)

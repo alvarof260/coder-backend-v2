@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
   try {
     const product = req.body
     const productAdd = await productsModel.create(product)
-    res.status(201).json({ status: 'sucess', payload: productAdd })
+    res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }

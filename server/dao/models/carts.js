@@ -8,7 +8,7 @@ const cartsSchema = new mongoose.Schema({
       {
         // _id: false es para que no se genere otro ID:
         _id: false,
-        product: { type: mongoose.Schema.Types.products, ref: 'products' },
+        product: { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
         quantity: { type: Number, min: 0 }
       }
     ],

@@ -38,7 +38,14 @@ router.get('/', async (req, res) => {
 })
 
 // Obtener un producto por su id
-router.get('/:pid((\\d+))', async (req, res) => {
+router.get('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const pid = req.params.pid
+    const product = await productsModel.findById(pid)
+    res.status(200).json({ status: 'success', payload: product })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
   /* try {
     const pid = parseInt(req.params.pid)
     const product = await PM.getProductByID(pid)

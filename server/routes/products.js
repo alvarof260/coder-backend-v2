@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ProductManager } from '../fs/product-manager.js'
+import { ProductManager } from '../dao/fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js'
 
 // Inicializar recursos importantes para el trabajo del CRUD

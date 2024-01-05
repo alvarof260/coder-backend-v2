@@ -10,7 +10,7 @@ const productsSchema = new mongoose.Schema({
   code: { type: String, required: true, trim: true, unique: true },
   stock: { type: Number, required: true, min: 0 },
   status: { type: Boolean, default: true, enum: [true, false] },
-  category: { type: String, required: true, enum: ['Home', 'Electronic', 'Clothing'] }
+  category: { type: String, required: true, enum: ['Home', 'Electronic', 'Clothing', 'Sports'] }
 })
 
 export const productsModel = mongoose.model(productsCollection, productsSchema)

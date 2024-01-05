@@ -3,7 +3,7 @@ import { ProductManager } from '../fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js'
 
 // Inicializar recursos importantes para el trabajo del CRUD
-const PM = new ProductManager('./src/data/products.json')
+const PM = new ProductManager('./server/data/products.json')
 const router = Router()
 
 // Obtener todos los productos o limitar la lista de productos

@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { CartManager } from '../fs/cart-manager.js'
 
 const router = Router()
-const CM = new CartManager('./src/data/carts.json')
+const CM = new CartManager('./server/data/carts.json')
 
 // crear el carrito
 router.post('/', async (req, res) => {

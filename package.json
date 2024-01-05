@@ -1,9 +1,9 @@
 {
   "name": "coder-backend-v2",
-  "version": "1.0.0",
+  "version": "1.7.1",
   "description": "",
   "type": "module",
-  "main": "src/app.js",
+  "main": "server/app.js",
   "scripts": {
     "start": "node .",
     "dev": "nodemon ."

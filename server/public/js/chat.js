@@ -54,8 +54,8 @@ socketClient.on('messages', (data) => {
   history.innerHTML = ''
   for (const message of data) {
     const div = document.createElement('div')
-    div.className = 'message'
-    div.innerHTML = `${message.user}: ${message.message}`
+    div.className = 'messages'
+    div.innerHTML = `<span>${message.user}: </span> <p>${message.message} </p>`
     history.appendChild(div)
   }
 })

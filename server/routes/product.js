@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { productsModel } from '../dao/models/products.js'
+import { productsModel } from '../dao/models/product.js'
 /* import { ProductManager } from '../dao/fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js' */
 

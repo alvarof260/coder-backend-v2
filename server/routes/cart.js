@@ -1,8 +1,8 @@
 /* eslint-disable eqeqeq */
 import { Router } from 'express'
 import { Types } from 'mongoose'
-import { cartsModel } from '../dao/models/carts.js'
-import { productsModel } from '../dao/models/products.js'
+import { cartsModel } from '../dao/models/cart.js'
+import { productsModel } from '../dao/models/product.js'
 // import { CartManager } from '../dao/fs/cart-manager.js'
 
 const router = Router()

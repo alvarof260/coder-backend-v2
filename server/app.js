@@ -3,14 +3,13 @@ import mongoose from 'mongoose'
 
 import configExpressApp from './config/server.js'
 import initializeSocket from './socket.js'
-import { messagesModel } from './dao/models/messages.js'
-import productsRouter from './routes/products.js'
-import cartsRouter from './routes/carts.js'
-import viewsRouter from './routes/views.js'
+import { messagesModel } from './dao/models/message.js'
+import productsRouter from './routes/product.js'
+import cartsRouter from './routes/cart.js'
+import viewsRouter from './routes/view.js'
 import chatRouter from './routes/chat.js'
 
 const app = express()
-const httpServer = app.listen(8080, () => console.log('http://localhost:8080'))
 
 configExpressApp(app)
 
@@ -26,6 +25,7 @@ try {
   app.use('/products', viewsRouter)
   app.use('/chat', chatRouter)
 
+  const httpServer = app.listen(8080, () => console.log('http://localhost:8080'))
   initializeSocket(httpServer, messagesModel)
 } catch (err) {
   console.error(err.message)

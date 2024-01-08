@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
-const cartsCollection = 'carts'
+const cartCollection = 'carts'
 
-const cartsSchema = new mongoose.Schema({
+const cartSchema = new mongoose.Schema({
   products: {
     type: [
       {
@@ -16,4 +16,4 @@ const cartsSchema = new mongoose.Schema({
   }
 })
 
-export const cartsModel = mongoose.model(cartsCollection, cartsSchema)
+export const cartModel = mongoose.model(cartCollection, cartSchema)

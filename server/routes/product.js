@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { productsModel } from '../dao/models/product.js'
+import { productModel } from '../dao/models/product.js'
+import { PORT } from '../app.js'
 /* import { ProductManager } from '../dao/fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js' */
 
@@ -7,17 +8,58 @@ import { verifyProduct, verifyProductPartial } from '../utils.js' */
 // const PM = new ProductManager('./server/data/products.json')
 const router = Router()
 
+const getProducts = async (req, res) => {
+  try {
+    const limit = req.query.limit || 10
+    const page = req.query.page || 1
+    const paginateOptions = { lean: true, limit, page }
+    const queryOptions = {}
+    if (req.query.stock) queryOptions.stock = req.query.stock
+    if (req.query.price) queryOptions.price = req.query.price
+    if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 }
+    if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 }
+    const result = await productModel.paginate(queryOptions, paginateOptions)
+    let prevLink
+    if (!req.query.page) {
+      prevLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.prevPage}`
+    } else {
+      const modifiedUrl = req.originalUrl.replace(`&page=${page}`, `&page=${result.prevPage}`)
+      prevLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+    }
+    let nextLink
+    if (!req.query.page) {
+      nextLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.nextPage}`
+    } else {
+      const modifiedUrl = req.originalUrl.replace(`&page=${page}`, `&page=${result.nextPage}`)
+      nextLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+    }
+    return {
+      statusCode: 200,
+      response: {
+        status: 'success',
+        payload: result.docs,
+        prevPage: result.prevPage,
+        nextPage: result.nextPage,
+        page: result.page,
+        hasPrevPage: result.hasPrevPage,
+        hasNextPage: result.hasNextPage,
+        prevLink: result.hasPrevPage ? prevLink : null,
+        nextLink: result.hasNextPage ? nextLink : null
+      }
+    }
+  } catch (err) {
+    return {
+      statusCode: 500,
+      response: { status: 'error', error: err.message }
+    }
+  }
+}
+
 // Obtener todos los productos o limitar la lista de productos
 router.get('/', async (req, res) => {
   try {
-    const { limit } = req.query // Obtiene el parámetro limit
-    const parsedLimit = parseInt(limit)
-    if (!parsedLimit || isNaN(parsedLimit)) {
-      const products = await productsModel.find()
-      return res.status(200).json({ status: 'success', payload: products })
-    }
-    const products = await productsModel.find().limit(parsedLimit)
-    res.status(200).json({ status: 'success', payload: products })
+    const result = await getProducts(req, res)
+    res.send(result.statusCode).json(result.response)
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }
@@ -41,7 +83,7 @@ router.get('/', async (req, res) => {
 router.get('/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const pid = req.params.pid
-    const product = await productsModel.findById(pid)
+    const product = await productModel.findById(pid)
     res.status(200).json({ status: 'success', payload: product })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
@@ -60,7 +102,7 @@ router.get('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const product = req.body
-    const productAdd = await productsModel.create(product)
+    const productAdd = await productModel.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
@@ -82,7 +124,7 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const pid = req.params.pid
     const data = req.body
-    const productUpdated = await productsModel.findOneAndUpdate({ _id: pid }, data, { returnDocument: 'after' })
+    const productUpdated = await productModel.findOneAndUpdate({ _id: pid }, data, { returnDocument: 'after' })
     if (productUpdated) {
       // Si productUpdated existe, significa que se actualizó correctamente
       return res.status(200).json({ status: 'success', payload: productUpdated })
@@ -110,7 +152,7 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 router.delete('/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const pid = req.params.pid
-    const productDeleted = await productsModel.findByIdAndDelete({ _id: pid }, { returnDocument: 'after' })
+    const productDeleted = await productModel.findByIdAndDelete({ _id: pid }, { returnDocument: 'after' })
     if (productDeleted) {
       // Si productDeleted existe, significa que se eliminó correctamente
       return res.status(200).json({ status: 'success', payload: productDeleted })

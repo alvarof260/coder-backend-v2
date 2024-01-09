@@ -45,7 +45,7 @@ router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
 })
 
 // Actualizar los productos que estan en el carrito
-router.put('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const cid = req.params.cid
     const pid = req.params.pid
@@ -127,6 +127,37 @@ router.put('/:cid([a-fA-F0-9]{24})', async (req, res) => {
   }
 })
 
+// Modificar la cantidad del producto en un carrito
+router.put('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    const cart = await cartModel.findById(cid)
+    if (cart === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
+    const quantityToUpdate = req.body.quantity
+    if (!quantityToUpdate) {
+      return res.status(400).json({ status: 'error', error: 'Field quantity is not optional.' })
+    }
+    if (typeof quantityToUpdate !== 'number') {
+      return res.status(400).json({ status: 'error', error: 'quantity must be a number.' })
+    }
+    if (quantityToUpdate === 0) {
+      return res.status(400).json({ status: 'error', error: 'quantity can not be zero (0).' })
+    }
+    const productIndex = cart.products.findIndex(el => el.product == pid)
+    if (productIndex > -1) {
+      cart.products[productIndex].quantity = quantityToUpdate
+    } else {
+      return res.status(404).json({ status: 'error', error: `Product id: ${pid} does exists.` })
+    }
+    const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })
+    res.status(200).json({ status: 'success', payload: cartUpdated })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
+})
+
+// eliminar todos los productos del carrito
 router.delete('/:cid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const cid = req.params.cid

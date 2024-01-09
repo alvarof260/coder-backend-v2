@@ -49,9 +49,9 @@ router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, r
     const cid = req.params.cid
     const pid = req.params.pid
     const exists = await productModel.exists({ _id: pid })
-    if (!exists) return res.status(404).json({ status: 'error', error: 'Product not found.' })
+    if (!exists) return res.status(404).json({ status: 'error', error: `Product id: ${pid} not found.` })
     const cartToAdd = await cartModel.findById(cid)
-    if (cartToAdd === null) return res.status(404).json({ status: 'error', error: 'Cart not found.' })
+    if (cartToAdd === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
     const prodIndex = cartToAdd.products.findIndex(el => el.product == pid)
     console.log(prodIndex)
     console.log(cartToAdd.products)
@@ -70,6 +70,31 @@ router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, r
   } catch (error) {
     return res.status(500).json({ status: 'error', error: 'Error fetching carts.' })
   } */
+})
+
+// borrar un producto de un carrito
+router.delete('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    const productToDelete = await productModel.findById(pid)
+    if (productToDelete === null) return res.status(404).json({ status: 'error', error: `Product id: ${pid} not found.` })
+    const cart = await cartModel.findById(cid)
+    if (cart === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
+    const prodIndex = cart.products.findIndex(el => el.product == pid)
+
+    if (prodIndex > -1) {
+      // eliminar el producto que se desea borrar
+      cart.products = cart.products.filter(el => el.product.toString() !== pid)
+    } else {
+      return res.status(404).json({ status: 'error', error: 'Product not found in cart.' })
+    }
+
+    const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })
+    res.status(200).json({ status: 'success', payload: cartUpdated })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
 })
 
 export default router

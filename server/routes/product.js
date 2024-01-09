@@ -8,6 +8,7 @@ import { verifyProduct, verifyProductPartial } from '../utils.js' */
 // const PM = new ProductManager('./server/data/products.json')
 const router = Router()
 
+// obtener los productos y los datos para la paginacion
 const getProducts = async (req, res) => {
   try {
     const limit = req.query.limit || 10

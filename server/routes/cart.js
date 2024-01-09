@@ -45,7 +45,7 @@ router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
 })
 
 // Actualizar los productos que estan en el carrito
-router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.put('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const cid = req.params.cid
     const pid = req.params.pid
@@ -74,7 +74,7 @@ router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, r
 })
 
 // borrar un producto de un carrito
-router.delete('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.delete('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const cid = req.params.cid
     const pid = req.params.pid
@@ -120,6 +120,19 @@ router.put('/:cid([a-fA-F0-9]{24})', async (req, res) => {
       if (productToAdd === null) return res.status(404).json({ status: 'error', error: `Product id: ${product.product} does exists, we can not add to cart.` })
     }
     cart.products = products
+    const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })
+    res.status(200).json({ status: 'success', payload: cartUpdated })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
+})
+
+router.delete('/:cid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const cart = await cartModel.findById(cid)
+    if (cart === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
+    cart.products = []
     const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })
     res.status(200).json({ status: 'success', payload: cartUpdated })
   } catch (err) {

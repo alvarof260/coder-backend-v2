@@ -8,18 +8,24 @@ import { verifyProduct, verifyProductPartial } from '../utils.js' */
 // const PM = new ProductManager('./server/data/products.json')
 const router = Router()
 
-// obtener los productos y los datos para la paginacion
 export const getProducts = async (req, res) => {
   try {
-    const limit = req.query.limit || 10
-    const page = req.query.page || 1
-    const paginateOptions = { lean: true, limit, page }
+    // Configuración de paginación predeterminada (limit y page)
+    const limit = req.query.limit || 10 // Obtener el límite de productos por página
+    const page = req.query.page || 1 // Obtener la página actual
+    const paginateOptions = { lean: true, limit, page } // Opciones de paginación
+
+    // Configuración de opciones de consulta (filtros)
     const queryOptions = {}
-    if (req.query.stock) queryOptions.stock = req.query.stock
-    if (req.query.price) queryOptions.price = req.query.price
-    if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 }
-    if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 }
+    if (req.query.stock) queryOptions.stock = req.query.stock // Filtrar por stock
+    if (req.query.price) queryOptions.price = req.query.price // Filtrar por precio
+    if (req.query.sort === 'asc') paginateOptions.sort = { price: 1 } // Orden ascendente por precio
+    if (req.query.sort === 'desc') paginateOptions.sort = { price: -1 } // Orden descendente por precio
+
+    // Obtener los productos paginados de acuerdo a las opciones de paginación y consulta
     const result = await productModel.paginate(queryOptions, paginateOptions)
+
+    // Construir enlaces para la paginación (previo y siguiente)
     let prevLink
     if (!req.query.page) {
       prevLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.prevPage}`
@@ -27,6 +33,7 @@ export const getProducts = async (req, res) => {
       const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.prevPage}`)
       prevLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
     }
+
     let nextLink
     if (!req.query.page) {
       nextLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.nextPage}`
@@ -34,11 +41,13 @@ export const getProducts = async (req, res) => {
       const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.nextPage}`)
       nextLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
     }
+
+    // Devolver la respuesta con los datos de paginación y los productos obtenidos
     return {
       statusCode: 200,
       response: {
         status: 'success',
-        payload: result.docs,
+        payload: result.docs, // Lista de productos obtenidos
         prevPage: result.prevPage,
         nextPage: result.nextPage,
         page: result.page,
@@ -50,9 +59,10 @@ export const getProducts = async (req, res) => {
       }
     }
   } catch (err) {
+    // Manejo de errores en caso de que falle la obtención de productos
     return {
       statusCode: 500,
-      response: { status: 'error', error: err.message }
+      response: { status: 'error', error: err.message } // Devolver un mensaje de error
     }
   }
 }

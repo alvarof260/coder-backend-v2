@@ -97,4 +97,33 @@ router.delete('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req
   }
 })
 
+router.put('/:cid([a-fA-F0-9]{24})', async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const cart = await cartModel.findById(cid)
+    if (cart === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
+    const products = req.body.products
+    if (!products) return res.status(400).json({ status: 'error', error: 'Field products is not optional.' })
+    // verificar cada producto para actualizar
+    for (let index = 0; index < products.length; index++) {
+      if (!products[index].hasOwnProperty('product') || !products[index].hasOwnProperty('quantity')) {
+        return res.status(400).json({ status: 'error', error: 'product must have a valid id and valid quantity.' })
+      }
+      if (typeof products[index].quantity !== 'number') {
+        return res.status(400).json({ status: 'error', error: 'product\'s quantity must be a number.' })
+      }
+      if (products[index].quantity === 0) {
+        return res.status(400).json({ status: 'error', error: 'product\'s quantity can not be zero (0).' })
+      }
+      const productToAdd = await productModel.findById(products[index].product)
+      if (productToAdd === null) return res.status(404).json({ status: 'error', error: `Product id: ${products[index].product} does exists, we can not add to cart.` })
+    }
+    cart.products = products
+    const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })
+    res.status(200).json({ status: 'success', payload: cartUpdated })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
+})
+
 export default router

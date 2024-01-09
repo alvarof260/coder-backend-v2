@@ -2,6 +2,17 @@
     <h1>Coder Shop</h1>
 </header>
 <main>
+    <div class="paginate">
+        {{#if paginateInfo.hasPrevPage}}
+            <a href="{{paginateInfo.prevLink}}">Anterior</a>
+        {{/if}}
+        {{#each paginateInfo.totalPages}}
+            <a href="{{this.link}}">{{this.page}}</a>
+        {{/each}}
+        {{#if paginateInfo.hasNextPage}}
+            <a href="{{paginateInfo.nextLink}}">Siguiente</a>
+        {{/if}}
+    </div>
     <section>
         <h2>List of Products</h2>
         <table>
@@ -19,7 +30,7 @@
             <tbody>
                 {{#each products}}
                 <tr>
-                    <td><button>Add to Cart</button></td>
+                    <td><button onclick="addToCart({{this.id}})">Add to Cart</button></td>
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
                     <td>${{this.price}}</td>

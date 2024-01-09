@@ -9,7 +9,7 @@ import { verifyProduct, verifyProductPartial } from '../utils.js' */
 const router = Router()
 
 // obtener los productos y los datos para la paginacion
-const getProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const limit = req.query.limit || 10
     const page = req.query.page || 1
@@ -24,14 +24,14 @@ const getProducts = async (req, res) => {
     if (!req.query.page) {
       prevLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.prevPage}`
     } else {
-      const modifiedUrl = req.originalUrl.replace(`&page=${page}`, `&page=${result.prevPage}`)
+      const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.prevPage}`)
       prevLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
     }
     let nextLink
     if (!req.query.page) {
       nextLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.nextPage}`
     } else {
-      const modifiedUrl = req.originalUrl.replace(`&page=${page}`, `&page=${result.nextPage}`)
+      const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.nextPage}`)
       nextLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
     }
     return {
@@ -42,6 +42,7 @@ const getProducts = async (req, res) => {
         prevPage: result.prevPage,
         nextPage: result.nextPage,
         page: result.page,
+        totalPages: result.totalPages,
         hasPrevPage: result.hasPrevPage,
         hasNextPage: result.hasNextPage,
         prevLink: result.hasPrevPage ? prevLink : null,

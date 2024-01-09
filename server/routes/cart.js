@@ -9,6 +9,26 @@ import { productModel } from '../dao/models/product.js'
 const router = Router()
 // const CM = new CartManager('./server/data/carts.json')
 
+export const getProductsFromCart = async (req, res) => {
+  try {
+    const cid = req.params.cid
+    const result = await cartModel.findById(cid).populate('products.product').lean()
+    if (result === null) return res.status(404).json({ status: 'error', error: `cart id: ${cid} not found.` })
+    return {
+      statusCode: 200,
+      response: {
+        status: 'success',
+        payload: result
+      }
+    }
+  } catch (err) {
+    return {
+      statusCode: 500,
+      response: { error: err.message }
+    }
+  }
+}
+
 // crear el carrito
 router.post('/', async (req, res) => {
   try {

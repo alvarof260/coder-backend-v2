@@ -4,8 +4,8 @@ import mongoose from 'mongoose'
 import configExpressApp from './config/server.js'
 import initializeSocket from './socket.js'
 import { messageModel } from './dao/models/message.js'
-import productsRouter from './routes/product.js'
-import cartsRouter from './routes/cart.js'
+import productRouter from './routes/product.js'
+import cartRouter from './routes/cart.js'
 import viewsRouter from './routes/view.js'
 import chatRouter from './routes/chat.js'
 
@@ -22,9 +22,10 @@ try {
   console.log('DB connect.')
   // Routers de los endpoints de la API
   app.get('/', (req, res) => res.render('index'))
-  app.use('/api/products', productsRouter)
-  app.use('/api/carts', cartsRouter)
+  app.use('/api/products', productRouter)
+  app.use('/api/carts', cartRouter)
   app.use('/products', viewsRouter)
+  app.use('/carts', viewsRouter)
   app.use('/chat', chatRouter)
 
   const httpServer = app.listen(PORT, () => console.log('http://localhost:8080'))

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable eqeqeq */
 import { Router } from 'express'
 import { Types } from 'mongoose'
@@ -105,18 +106,18 @@ router.put('/:cid([a-fA-F0-9]{24})', async (req, res) => {
     const products = req.body.products
     if (!products) return res.status(400).json({ status: 'error', error: 'Field products is not optional.' })
     // verificar cada producto para actualizar
-    for (let index = 0; index < products.length; index++) {
-      if (!products[index].hasOwnProperty('product') || !products[index].hasOwnProperty('quantity')) {
+    for (const product of products) {
+      if (!product.hasOwnProperty('product') || !product.hasOwnProperty('quantity')) {
         return res.status(400).json({ status: 'error', error: 'product must have a valid id and valid quantity.' })
       }
-      if (typeof products[index].quantity !== 'number') {
+      if (typeof product.quantity !== 'number') {
         return res.status(400).json({ status: 'error', error: 'product\'s quantity must be a number.' })
       }
-      if (products[index].quantity === 0) {
+      if (product.quantity === 0) {
         return res.status(400).json({ status: 'error', error: 'product\'s quantity can not be zero (0).' })
       }
-      const productToAdd = await productModel.findById(products[index].product)
-      if (productToAdd === null) return res.status(404).json({ status: 'error', error: `Product id: ${products[index].product} does exists, we can not add to cart.` })
+      const productToAdd = await productModel.findById(product.product)
+      if (productToAdd === null) return res.status(404).json({ status: 'error', error: `Product id: ${product.product} does exists, we can not add to cart.` })
     }
     cart.products = products
     const cartUpdated = await cartModel.findByIdAndUpdate(cid, cart, { returnDocument: 'after' })

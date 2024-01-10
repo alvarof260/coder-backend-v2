@@ -12,7 +12,8 @@ document.getElementById('formPost').addEventListener('submit', (evt) => {
     price: parseInt(document.getElementById('price').value),
     code: document.getElementById('code').value,
     stock: parseInt(document.getElementById('stock').value),
-    status: document.getElementById('status').value === 'true'
+    status: document.getElementById('status').value === 'true',
+    category: document.getElementById('category').value
   }
 
   // reseteo los inputs
@@ -21,6 +22,7 @@ document.getElementById('formPost').addEventListener('submit', (evt) => {
   document.getElementById('price').value = ''
   document.getElementById('code').value = ''
   document.getElementById('stock').value = ''
+  document.getElementById('category').value = ''
 
   // configuracion para fetch
   const postOptions = {
@@ -83,6 +85,7 @@ socketClient.on('listProduct', (data) => {
     <td>${product.code}</td>
     <td>${product.stock}</td>
     <td>${status}</td>
+    <td>${product.category}</td>
     `
     tbody.appendChild(tr)
   }

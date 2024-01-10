@@ -1,20 +1,23 @@
 <header>
     <h1>Coder Shop</h1>
+    <nav>
+        <a href="#" id="cart">mi carrito</a>
+    </nav>
 </header>
 <main>
-    <div class="paginate">
-        {{#if paginateInfo.hasPrevPage}}
-            <a href="{{paginateInfo.prevLink}}">Anterior</a>
-        {{/if}}
-        {{#each paginateInfo.totalPages}}
-            <a href="{{this.link}}">{{this.page}}</a>
-        {{/each}}
-        {{#if paginateInfo.hasNextPage}}
-            <a href="{{paginateInfo.nextLink}}">Siguiente</a>
-        {{/if}}
-    </div>
     <section>
         <h2>List of Products</h2>
+        <div class="paginate">
+            {{#if paginateInfo.hasPrevPage}}
+                <a href="{{paginateInfo.prevLink}}" class="nextOrPrev">Anterior</a>
+            {{/if}}
+            {{#each paginateInfo.totalPages}}
+                <a href="{{this.link}}" class="pages">{{this.page}}</a>
+            {{/each}}
+            {{#if paginateInfo.hasNextPage}}
+                <a href="{{paginateInfo.nextLink}}" class="nextOrPrev">Siguiente</a>
+            {{/if}}
+        </div>
         <table>
             <thead>
                 <tr>
@@ -25,12 +28,13 @@
                     <th>Code</th>
                     <th>Stock</th>
                     <th>Status</th>
+                    <th>Category</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each products}}
                 <tr>
-                    <td><button onclick="addToCart({{this.id}})">Add to Cart</button></td>
+                    <td><button class="addToCartBtn" data-product-id="{{this.id}}">Add to Cart</button></td>
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
                     <td>${{this.price}}</td>
@@ -41,6 +45,7 @@
                     {{else}}
                         <td>❌</td>
                     {{/if}}
+                    <td>{{this.category}}</td>
                 </tr>   
                 {{/each }}
             </tbody>
@@ -50,3 +55,5 @@
 <footer>
     <small>copyright © 2024  - Alvaro Estanislao Figueroa </small>
 </footer>
+
+<script src="/js/product.js"></script>

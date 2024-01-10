@@ -24,7 +24,7 @@ export const getProductsFromCart = async (req, res) => {
   } catch (err) {
     return {
       statusCode: 500,
-      response: { error: err.message }
+      response: { status: 'error', error: err.message }
     }
   }
 }
@@ -65,7 +65,7 @@ router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
 })
 
 // Actualizar los productos que estan en el carrito
-router.put('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.post('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, res) => {
   try {
     const cid = req.params.cid
     const pid = req.params.pid

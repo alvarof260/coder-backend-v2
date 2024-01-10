@@ -27,6 +27,14 @@
                         <option value="false">False</option>
                     </select>
                 </label>
+                <label> Category:
+                    <select name="category" id="category">
+                        <option value="Home">Home</option>
+                        <option value="Electronic">Electronic</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Sports">Sports</option>
+                    </select>
+                </label>
             </fieldset>
                 <button id="createProduct">Create a Product</button>
         </form>
@@ -43,6 +51,7 @@
                     <th>Code</th>
                     <th>Stock</th>
                     <th>Status</th>
+                    <th>Category</th>
                 </tr>
             </thead>
             <tbody id="list">
@@ -59,6 +68,7 @@
                     {{else}}
                         <td>❌</td>
                     {{/if}}
+                    <td>{{this.category}}</td>
                 </tr>   
                 {{/each }}
             </tbody>

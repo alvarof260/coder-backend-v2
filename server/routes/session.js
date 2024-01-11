@@ -11,9 +11,9 @@ router.post('/login', async (req, res) => {
     }
     const user = await userModel.findOne({ email })
     if (!user) {
-      return res.status(404).json({ status: 'error', error: `User with email: ${email} not found.` })
+      return res.status(401).json({ status: 'error', error: `User with email: ${email} not found.` })
     }
-    if (user.password !== password) return res.status(400).json({ status: 'error', error: 'The password is incorrect, try again.' })
+    if (user.password !== password) return res.status(401).json({ status: 'error', error: 'The password is incorrect, try again.' })
     if (user.email === 'adminCoder@coder.com' && user.password === 'adminCoder123') {
       user.role = 'admin'
     } else {

@@ -9,6 +9,7 @@ import cartRouter from './routes/cart.js'
 import viewsRouter from './routes/view.js'
 import chatRouter from './routes/chat.js'
 import viewSessionRouter from './routes/view-session.js'
+import sessionRouter from './routes/session.js'
 
 export const PORT = process.env.PORT || 8080
 
@@ -22,12 +23,13 @@ try {
   })
   console.log('DB connect.')
   // Routers de los endpoints de la API
-  app.use('/', viewSessionRouter)
+  app.use('/api/session', sessionRouter)
   app.use('/api/products', productRouter)
   app.use('/api/carts', cartRouter)
+  app.use('/chat', chatRouter)
   app.use('/products', viewsRouter)
   app.use('/carts', viewsRouter)
-  app.use('/chat', chatRouter)
+  app.use('/', viewSessionRouter)
 
   const httpServer = app.listen(PORT, () => console.log('http://localhost:8080'))
   initializeSocket(httpServer, messageModel)

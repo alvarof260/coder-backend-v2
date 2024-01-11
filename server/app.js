@@ -8,7 +8,7 @@ import productRouter from './routes/product.js'
 import cartRouter from './routes/cart.js'
 import viewsRouter from './routes/view.js'
 import chatRouter from './routes/chat.js'
-
+import viewSessionRouter from './routes/view-session.js'
 export const PORT = process.env.PORT || 8080
 
 const app = express()
@@ -21,7 +21,7 @@ try {
   })
   console.log('DB connect.')
   // Routers de los endpoints de la API
-  app.get('/', (req, res) => res.render('index'))
+  app.get('/', viewSessionRouter)
   app.use('/api/products', productRouter)
   app.use('/api/carts', cartRouter)
   app.use('/products', viewsRouter)

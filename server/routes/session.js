@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { userModel } from '../dao/models/user.js'
+import { createHash, isValidPassword } from '../utils.js'
 
 const router = Router()
 
@@ -13,7 +14,7 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ status: 'error', error: `User with email: ${email} not found.` })
     }
-    if (user.password !== password) return res.status(401).json({ status: 'error', error: 'The password is incorrect, try again.' })
+    if (!isValidPassword(user, password)) return res.status(401).json({ status: 'error', error: 'The password is incorrect, try again.' })
     if (user.email === 'adminCoder@coder.com' && user.password === 'adminCoder123') {
       user.role = 'admin'
     } else {
@@ -42,6 +43,7 @@ router.post('/register', async (req, res) => {
     if (user) {
       res.redirect('/register')
     }
+    req.body.password = createHash(req.body.password)
     await userModel.create(req.body)
     res.redirect('/')
   } catch (err) {

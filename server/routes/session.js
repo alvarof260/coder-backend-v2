@@ -14,11 +14,17 @@ router.post('/login', async (req, res) => {
       return res.status(404).json({ status: 'error', error: `User with email: ${email} not found.` })
     }
     if (user.password !== password) return res.status(400).json({ status: 'error', error: 'The password is incorrect, try again.' })
+    if (user.email === 'adminCoder@coder.com' && user.password === 'adminCoder123') {
+      user.role = 'admin'
+    } else {
+      user.role = 'user'
+    }
     req.session.user = {
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
-      age: user.age
+      age: user.age,
+      role: user.role
     }
     res.redirect('/products')
   } catch (err) {
@@ -41,6 +47,14 @@ router.post('/register', async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }
+})
+
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({ status: 'error', error: err })
+    } else res.redirect('/')
+  })
 })
 
 export default router

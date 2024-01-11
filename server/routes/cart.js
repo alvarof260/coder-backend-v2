@@ -74,8 +74,6 @@ router.post('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', async (req, 
     const cartToAdd = await cartModel.findById(cid)
     if (cartToAdd === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
     const prodIndex = cartToAdd.products.findIndex(el => el.product == pid)
-    console.log(prodIndex)
-    console.log(cartToAdd.products)
     prodIndex > -1 ? cartToAdd.products[prodIndex].quantity += 1 : cartToAdd.products.push({ product: new Types.ObjectId(pid), quantity: 1 })
     const cartUpdated = await cartModel.findByIdAndUpdate(cid, cartToAdd, { returnDocument: 'after' })
     res.status(200).json({ status: 'success', payload: cartUpdated })

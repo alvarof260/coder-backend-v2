@@ -1,8 +1,19 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 import { __dirname } from '../utils.js'
 
 const configExpressApp = (app) => {
+  app.use(session({
+    store: new MongoStore({
+      mongoUrl: 'mongodb+srv://alvarof260:delfina2@cluster0.cmr6jcw.mongodb.net/',
+      dbName: 'ecommerce'
+    }),
+    secret: 'secret-ecommerce',
+    resave: true,
+    saveUninitialized: true
+  }))
   app.engine('handlebars', handlebars.engine())
   app.set('views', __dirname + '/views')
   app.set('view engine', 'handlebars')

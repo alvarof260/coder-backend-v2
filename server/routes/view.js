@@ -3,12 +3,13 @@ import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import { PORT } from '../app.js'
 import { getProductsFromCart } from './cart.js'
+import { privateRoutes, publicRoutes } from '../middlewares/auth.js'
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
 const router = Router()
 // const PM = new ProductManager('./server/data/products.json')
 
-router.get('/', async (req, res) => {
+router.get('/', publicRoutes, async (req, res) => {
   // Llamada a la función getProducts para obtener los datos
   const result = await getProducts(req, res)
 
@@ -41,7 +42,8 @@ router.get('/', async (req, res) => {
         prevLink: result.response.prevLink,
         nextLink: result.response.nextLink,
         totalPages // Enlaces de todas las páginas disponibles
-      }
+      },
+      user: req.session.user
     })
   } else {
     // Si el estado de la respuesta no es 200, enviar el código de estado y el mensaje de error
@@ -49,13 +51,13 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', privateRoutes, async (req, res) => {
   // const products = await PM.getProducts()
   const products = await productModel.find().lean().exec()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })
 })
 
-router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
+router.get('/:cid([a-fA-F0-9]{24})', publicRoutes, async (req, res) => {
   const result = await getProductsFromCart(req, res)
   console.log(result)
   if (result.statusCode === 200) {

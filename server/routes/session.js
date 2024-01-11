@@ -4,22 +4,37 @@ import { createHash, isValidPassword } from '../utils.js'
 
 const router = Router()
 
+// Ruta para manejar la autenticación de usuarios
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body
+
+    // Verificar si el email y la contraseña fueron proporcionados
     if (!email || !password) {
       return res.status(400).json({ status: 'error', error: 'Email and password are not optional.' })
     }
+
+    // Buscar al usuario en la base de datos por su email
     const user = await userModel.findOne({ email })
+
+    // Si el usuario no existe, devolver un error 401 (No autorizado)
     if (!user) {
       return res.status(401).json({ status: 'error', error: `User with email: ${email} not found.` })
     }
-    if (!isValidPassword(user, password)) return res.status(401).json({ status: 'error', error: 'The password is incorrect, try again.' })
+
+    // Verificar la validez de la contraseña usando una función externa (isValidPassword)
+    if (!isValidPassword(user, password)) {
+      return res.status(401).json({ status: 'error', error: 'The password is incorrect, try again.' })
+    }
+
+    // Asignar un rol de 'admin' si el usuario es el administrador predeterminado
     if (user.email === 'adminCoder@coder.com' && user.password === 'adminCoder123') {
       user.role = 'admin'
     } else {
       user.role = 'user'
     }
+
+    // Almacenar información del usuario en la sesión y redirigir a la página de productos
     req.session.user = {
       first_name: user.first_name,
       last_name: user.last_name,
@@ -29,34 +44,50 @@ router.post('/login', async (req, res) => {
     }
     res.redirect('/products')
   } catch (err) {
+    // Manejar errores y devolver un código de estado 500 en caso de error interno del servidor
     res.status(500).json({ status: 'error', error: err.message })
   }
 })
 
+// Ruta para manejar el registro de usuarios
 router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body
+
+    // Verificar si el email y la contraseña fueron proporcionados
     if (!email || !password) {
       return res.status(400).json({ status: 'error', error: 'Email and password are not optional.' })
     }
+
+    // Verificar si ya existe un usuario con el mismo email
     const user = await userModel.findOne({ email })
+
+    // Si el usuario ya existe, redirigir a la página de registro
     if (user) {
       res.redirect('/register')
     }
+
+    // Hash de la contraseña antes de almacenarla en la base de datos (usar bcrypt sería más seguro)
     req.body.password = createHash(req.body.password)
+
+    // Crear un nuevo usuario en la base de datos y redirigir a la página principal
     await userModel.create(req.body)
     res.redirect('/')
   } catch (err) {
+    // Manejar errores y devolver un código de estado 500 en caso de error interno del servidor
     res.status(500).json({ status: 'error', error: err.message })
   }
 })
 
+// Ruta para manejar la desconexión de usuarios (logout)
 router.get('/logout', (req, res) => {
+  // Destruir la sesión y redirigir a la página principal
   req.session.destroy((err) => {
     if (err) {
       res.status(500).json({ status: 'error', error: err })
-    } else res.redirect('/')
+    } else {
+      res.redirect('/')
+    }
   })
 })
-
 export default router

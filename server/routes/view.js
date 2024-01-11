@@ -51,12 +51,14 @@ router.get('/', publicRoutes, async (req, res) => {
   }
 })
 
+// manejos de productos que estan a la ventas
 router.get('/realtimeproducts', privateRoutes, async (req, res) => {
   // const products = await PM.getProducts()
   const products = await productModel.find().lean().exec()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })
 })
 
+// ver el carrito que a cada uno le pertenece
 router.get('/:cid([a-fA-F0-9]{24})', publicRoutes, async (req, res) => {
   const result = await getProductsFromCart(req, res)
   console.log(result)

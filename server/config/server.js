@@ -2,6 +2,8 @@ import express from 'express'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import passport from 'passport'
+import initializePassport from './passport.js'
 import { __dirname } from '../utils.js'
 
 const configExpressApp = (app) => {
@@ -14,6 +16,11 @@ const configExpressApp = (app) => {
     resave: true,
     saveUninitialized: true
   }))
+
+  initializePassport()
+  app.use(passport.initialize())
+  app.use(passport.session())
+
   app.engine('handlebars', handlebars.engine())
   app.set('views', __dirname + '/views')
   app.set('view engine', 'handlebars')

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { userModel } from '../dao/models/user.js'
 import { createHash, isValidPassword } from '../utils.js'
+import passport from 'passport'
 
 const router = Router()
 
@@ -50,33 +51,8 @@ router.post('/login', async (req, res) => {
 })
 
 // Ruta para manejar el registro de usuarios
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password } = req.body
-
-    // Verificar si el email y la contraseña fueron proporcionados
-    if (!email || !password) {
-      return res.status(400).json({ status: 'error', error: 'Email and password are not optional.' })
-    }
-
-    // Verificar si ya existe un usuario con el mismo email
-    const user = await userModel.findOne({ email })
-
-    // Si el usuario ya existe, redirigir a la página de registro
-    if (user) {
-      res.redirect('/register')
-    }
-
-    // Hash de la contraseña antes de almacenarla en la base de datos (usar bcrypt sería más seguro)
-    req.body.password = createHash(req.body.password)
-
-    // Crear un nuevo usuario en la base de datos y redirigir a la página principal
-    await userModel.create(req.body)
-    res.redirect('/')
-  } catch (err) {
-    // Manejar errores y devolver un código de estado 500 en caso de error interno del servidor
-    res.status(500).json({ status: 'error', error: err.message })
-  }
+router.post('/register', passport.authenticate('register', { failureRedirect: '/failRegister' }), async (req, res) => {
+  res.redirect('/')
 })
 
 // Ruta para manejar la desconexión de usuarios (logout)

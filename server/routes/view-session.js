@@ -17,4 +17,12 @@ router.get('/profile', (req, res) => {
   res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user: req.session.user })
 })
 
+router.get('/failRegister', (req, res) => {
+  res.status(401).json({ status: 'error', error: 'Passport register failed.' })
+})
+
+router.get('/failLogin', (req, res) => {
+  res.status(401).json({ status: 'error', error: 'Passport login failed.' })
+})
+
 export default router

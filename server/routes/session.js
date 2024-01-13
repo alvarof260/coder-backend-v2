@@ -24,6 +24,15 @@ router.post('/register', passport.authenticate('register', { failureRedirect: '/
   res.redirect('/')
 })
 
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), (req, res) => {
+
+})
+
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
+  req.session.user = req.user
+  res.redirect('/')
+})
+
 // Ruta para manejar la desconexión de usuarios (logout)
 router.get('/logout', (req, res) => {
   // Destruir la sesión y redirigir a la página principal

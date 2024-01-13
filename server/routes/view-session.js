@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { passportCall, verifyToken } from '../utils.js'
+import { verifyToken } from '../utils.js'
+import { passportCall } from '../middlewares/auth.js'
 
 const router = Router()
 

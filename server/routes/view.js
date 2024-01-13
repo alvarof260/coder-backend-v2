@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import passport from 'passport'
 
 import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import { PORT } from '../app.js'
 import { getProductsFromCart } from './cart.js'
-import { passportCall, verifyToken } from '../utils.js'
+import { verifyToken } from '../utils.js'
+import { passportCall } from '../middlewares/auth.js'
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
 const router = Router()

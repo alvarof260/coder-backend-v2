@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { passportCall, verifyToken } from '../utils.js'
 
 const router = Router()
 
@@ -13,8 +14,9 @@ router.get('/register', (req, res) => {
 })
 
 // vista de perfil
-router.get('/profile', (req, res) => {
-  res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user: req.session.user })
+router.get('/profile', passportCall('jwt'), (req, res) => {
+  const decoded = verifyToken(req.signedCookies['jwt-token'])
+  res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user: decoded.user })
 })
 
 router.get('/failRegister', (req, res) => {

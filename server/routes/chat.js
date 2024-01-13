@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { publicRoutes } from '../middlewares/auth.js'
+import { passportCall } from '../utils.js'
 
 const router = Router()
 
-router.get('/', publicRoutes, (req, res) => {
+router.get('/', passportCall('jwt'), (req, res) => {
   res.render('chat', { title: 'CoderShop | Chat', style: 'chat.css' })
 })
 

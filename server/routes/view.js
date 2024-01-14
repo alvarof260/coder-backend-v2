@@ -4,15 +4,15 @@ import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import { PORT } from '../app.js'
 import { getProductsFromCart } from './cart.js'
-import { verifyToken } from '../utils.js'
-import { passportCall } from '../middlewares/auth.js'
+import { COOKIE_NAME, verifyToken, passportCall } from '../utils.js'
+
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
 const router = Router()
 // const PM = new ProductManager('./server/data/products.json')
 
 router.get('/', passportCall('jwt'), async (req, res) => {
-  const decoded = verifyToken(req.signedCookies['jwt-token'])
+  const decoded = verifyToken(req.signedCookies[COOKIE_NAME])
   // Llamada a la función getProducts para obtener los datos
   const result = await getProducts(req, res)
 

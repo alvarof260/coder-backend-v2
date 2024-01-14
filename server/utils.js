@@ -2,8 +2,10 @@ import { fileURLToPath } from 'node:url'
 import { dirname } from 'node:path'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import passport from 'passport'
 
 export const PRIVATE_KEY = 'coder-backend-ecommerce'
+export const COOKIE_NAME = 'jwt-token'
 
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
@@ -28,6 +30,19 @@ export const verifyToken = (token) => {
     // Manejar errores, como token expirado o inválido
     console.error('Error al verificar el token:', error.message)
     return null
+  }
+}
+
+export const passportCall = (strategy) => {
+  return async (req, res, next) => {
+    passport.authenticate(strategy, (err, user, info) => {
+      if (err) return next(err)
+      if (!user) {
+        return res.status(401).json({ status: 'error', error: info.message ? info.message : info.toString() })
+      }
+      req.user = user
+      next()
+    })(req, res, next)
   }
 }
 

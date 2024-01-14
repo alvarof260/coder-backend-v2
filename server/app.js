@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import configExpressApp from './config/server.js'
 import initializeSocket from './socket.js'
 import { messageModel } from './dao/models/message.js'
+import { passportCall } from './utils.js'
 import productRouter from './routes/product.js'
 import cartRouter from './routes/cart.js'
 import viewsRouter from './routes/view.js'
@@ -26,9 +27,9 @@ try {
   app.use('/api/session', sessionRouter)
   app.use('/api/products', productRouter)
   app.use('/api/carts', cartRouter)
-  app.use('/chat', chatRouter)
-  app.use('/products', viewsRouter)
-  app.use('/carts', viewsRouter)
+  app.use('/chat', passportCall('jwt'), chatRouter)
+  app.use('/products', passportCall('jwt'), viewsRouter)
+  app.use('/carts', passportCall('jwt'), viewsRouter)
   app.use('/', viewSessionRouter)
 
   const httpServer = app.listen(PORT, () => console.log('http://localhost:8080'))

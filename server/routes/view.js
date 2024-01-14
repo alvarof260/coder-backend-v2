@@ -4,14 +4,14 @@ import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import { PORT } from '../app.js'
 import { getProductsFromCart } from './cart.js'
-import { COOKIE_NAME, verifyToken, passportCall } from '../utils.js'
+import { COOKIE_NAME, verifyToken } from '../utils.js'
 
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
 const router = Router()
 // const PM = new ProductManager('./server/data/products.json')
 
-router.get('/', passportCall('jwt'), async (req, res) => {
+router.get('/', async (req, res) => {
   const decoded = verifyToken(req.signedCookies[COOKIE_NAME])
   // Llamada a la función getProducts para obtener los datos
   const result = await getProducts(req, res)
@@ -56,14 +56,14 @@ router.get('/', passportCall('jwt'), async (req, res) => {
 })
 
 // manejos de productos que estan a la ventas
-router.get('/realtimeproducts', passportCall('jwt'), async (req, res) => {
+router.get('/realtimeproducts', async (req, res) => {
   // const products = await PM.getProducts()
   const products = await productModel.find().lean().exec()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })
 })
 
 // ver el carrito que a cada uno le pertenece
-router.get('/:cid([a-fA-F0-9]{24})', passportCall('jwt'), async (req, res) => {
+router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
   const result = await getProductsFromCart(req, res)
   console.log(result)
   if (result.statusCode === 200) {

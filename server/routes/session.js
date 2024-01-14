@@ -8,6 +8,7 @@ const router = Router()
 // Ruta para manejar la autenticación de usuarios
 router.post('/login', passport.authenticate('login', { session: false }), async (req, res) => {
   try {
+    console.log(req.user)
     if (!req.user) {
       return res.status(500).render('errors/base', { error: 'error in server ' })
     }

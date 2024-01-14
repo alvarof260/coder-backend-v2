@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { productModel } from '../dao/models/product.js'
 import { PORT } from '../app.js'
+import { handlePolicies } from '../middlewares/auth.js'
 /* import { ProductManager } from '../dao/fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js' */
 
@@ -68,7 +69,7 @@ export const getProducts = async (req, res) => {
 }
 
 // Obtener todos los productos o limitar la lista de productos
-router.get('/', async (req, res) => {
+router.get('/', handlePolicies(['USER', 'PREMIUM', 'ADMIN']), async (req, res) => {
   try {
     const result = await getProducts(req, res)
     res.send(result.statusCode).json(result.response)
@@ -92,7 +93,7 @@ router.get('/', async (req, res) => {
 })
 
 // Obtener un producto por su id
-router.get('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.get('/:pid([a-fA-F0-9]{24})', handlePolicies(['USER', 'PREMIUM', 'ADMIN']), async (req, res) => {
   try {
     const pid = req.params.pid
     const product = await productModel.findById(pid)
@@ -111,7 +112,7 @@ router.get('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 })
 
 // Agregar un producto a la base de datos
-router.post('/', async (req, res) => {
+router.post('/', handlePolicies(['PREMIUM', 'ADMIN']), async (req, res) => {
   try {
     const product = req.body
     const productAdd = await productModel.create(product)
@@ -132,7 +133,7 @@ router.post('/', async (req, res) => {
 })
 
 // Obtener un producto por su id y actualizar datos
-router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.put('/:pid([a-fA-F0-9]{24})', handlePolicies(['PREMIUM', 'ADMIN']), async (req, res) => {
   try {
     const pid = req.params.pid
     const data = req.body
@@ -161,7 +162,7 @@ router.put('/:pid([a-fA-F0-9]{24})', async (req, res) => {
 })
 
 // Eliminar un producto de la base de datos
-router.delete('/:pid([a-fA-F0-9]{24})', async (req, res) => {
+router.delete('/:pid([a-fA-F0-9]{24})', handlePolicies(['PREMIUM', 'ADMIN']), async (req, res) => {
   try {
     const pid = req.params.pid
     const productDeleted = await productModel.findByIdAndDelete({ _id: pid }, { returnDocument: 'after' })

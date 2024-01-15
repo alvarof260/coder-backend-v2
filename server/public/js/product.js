@@ -3,26 +3,13 @@ const postOptions = {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' }
 }
-
-let cartData = {}
-const cart = document.getElementById('cart')
-
-const createCart = () => {
-  fetch('/api/carts', postOptions)
-    .then(response => response.json())
-    .then(response => {
-      if (response.status === 'error') throw new Error(response.error || 'error desconocido')
-      cartData = response.payload
-      cart.href = `carts/${cartData._id}`
-    })
-    .catch(err => {
-      console.log(err)
-      alert(err || 'se produjo un error')
-    })
-}
+const cid = document.getElementById('cart')
+const url = cid.href
+const urlObj = new URL(url)
+const ruta = urlObj.pathname
 
 addToCart = (pid) => {
-  fetch(`/api/carts/${cartData._id}/product/${pid}`, postOptions)
+  fetch(`/api${ruta}/product/${pid}`, postOptions)
     .then(response => response.json)
     .then(response => {
       console.log(response)
@@ -45,7 +32,3 @@ addToCartButtons.forEach(button => {
     addToCart(productId) // Llamar a addToCart con el ID del producto
   })
 })
-
-// La función addToCart debe permanecer igual a la versión corregida que proporcioné anteriormente
-
-document.addEventListener('DOMContentLoaded', createCart)

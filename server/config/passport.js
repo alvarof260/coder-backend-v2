@@ -6,7 +6,13 @@ import GitHubStrategy from 'passport-github2'
 
 import { userModel } from '../dao/models/user.js'
 import { cartModel } from '../dao/models/cart.js'
-import { PRIVATE_KEY, COOKIE_NAME, createHash, generateToken, isValidPassword } from '../utils.js'
+import {
+  PRIVATE_KEY,
+  COOKIE_NAME,
+  createHash,
+  generateToken,
+  isValidPassword
+} from '../utils.js'
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = jwt.Strategy

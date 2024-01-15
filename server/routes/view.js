@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
-import { PORT } from '../app.js'
+import config from '../config/config.js'
 import { getProductsFromCart } from './cart.js'
 import { COOKIE_NAME, verifyToken } from '../utils.js'
 
@@ -25,11 +25,11 @@ router.get('/', async (req, res) => {
     for (let index = 1; index <= result.response.totalPages; index++) {
       if (!req.query.page) {
         // Construir el enlace para la página actual
-        link = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${index}`
+        link = `http://${req.hostname}:${config.config.port}${req.originalUrl}&page=${index}`
       } else {
         // Modificar la URL para la página actual si existe una página en la consulta
         const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${index}`)
-        link = `http://${req.hostname}:${PORT}${modifiedUrl}`
+        link = `http://${req.hostname}:${config.config.port}${modifiedUrl}`
       }
       totalPages.push({ page: index, link }) // Agregar el enlace a la lista de páginas
     }

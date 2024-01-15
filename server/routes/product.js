@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { productModel } from '../dao/models/product.js'
-import { PORT } from '../app.js'
+import config from '../config/config.js'
 import { handlePolicies } from '../middlewares/auth.js'
 /* import { ProductManager } from '../dao/fs/product-manager.js'
 import { verifyProduct, verifyProductPartial } from '../utils.js' */
@@ -29,18 +29,18 @@ export const getProducts = async (req, res) => {
     // Construir enlaces para la paginación (previo y siguiente)
     let prevLink
     if (!req.query.page) {
-      prevLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.prevPage}`
+      prevLink = `http://${req.hostname}:${config.config.port}${req.originalUrl}&page=${result.prevPage}`
     } else {
       const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.prevPage}`)
-      prevLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+      prevLink = `http://${req.hostname}:${config.config.port}${modifiedUrl}`
     }
 
     let nextLink
     if (!req.query.page) {
-      nextLink = `http://${req.hostname}:${PORT}${req.originalUrl}&page=${result.nextPage}`
+      nextLink = `http://${req.hostname}:${config.config.port}${req.originalUrl}&page=${result.nextPage}`
     } else {
       const modifiedUrl = req.originalUrl.replace(`page=${page}`, `page=${result.nextPage}`)
-      nextLink = `http://${req.hostname}:${PORT}${modifiedUrl}`
+      nextLink = `http://${req.hostname}:${config.config.port}${modifiedUrl}`
     }
 
     // Devolver la respuesta con los datos de paginación y los productos obtenidos

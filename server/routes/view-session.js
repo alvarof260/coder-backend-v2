@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { COOKIE_NAME, verifyToken, passportCall } from '../utils.js'
+import { verifyToken, passportCall } from '../utils.js'
+import config from '../config/config.js'
 
 const router = Router()
 
@@ -15,7 +16,7 @@ router.get('/register', (req, res) => {
 
 // vista de perfil
 router.get('/profile', passportCall('jwt'), (req, res) => {
-  const decoded = verifyToken(req.signedCookies[COOKIE_NAME])
+  const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
   res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user: decoded.user })
 })
 

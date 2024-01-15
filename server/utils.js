@@ -3,9 +3,7 @@ import { dirname } from 'node:path'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
-
-export const PRIVATE_KEY = 'coder-backend-ecommerce'
-export const COOKIE_NAME = 'jwt-token'
+import config from './config/config.js'
 
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
@@ -15,14 +13,14 @@ export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSalt
 export const isValidPassword = (user, password) => bcrypt.compareSync(password, user.password)
 
 export const generateToken = (user) => {
-  const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' })
+  const token = jwt.sign({ user }, config.strategy.key, { expiresIn: '24h' })
   return token
 }
 
 export const verifyToken = (token) => {
   try {
     // Verifica y decodifica el token
-    const decoded = jwt.verify(token, PRIVATE_KEY) // Reemplaza 'secret' con tu clave secreta
+    const decoded = jwt.verify(token, config.strategy.key) // Reemplaza 'secret' con tu clave secreta
 
     // La variable 'decoded' ahora contiene la información del token
     return decoded

@@ -4,7 +4,7 @@ import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import config from '../config/config.js'
 import { getProductsFromCart } from './cart.js'
-import { COOKIE_NAME, verifyToken } from '../utils.js'
+import { verifyToken } from '../utils.js'
 
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
@@ -12,7 +12,7 @@ const router = Router()
 // const PM = new ProductManager('./server/data/products.json')
 
 router.get('/', async (req, res) => {
-  const decoded = verifyToken(req.signedCookies[COOKIE_NAME])
+  const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
   // Llamada a la función getProducts para obtener los datos
   const result = await getProducts(req, res)
 

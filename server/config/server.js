@@ -5,7 +5,8 @@ import initializePassport from './passport.js'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 
-import { __dirname, PRIVATE_KEY } from '../utils.js'
+import { __dirname } from '../utils.js'
+import config from './config.js'
 
 const configExpressApp = (app) => {
   app.engine('handlebars', handlebars.engine())
@@ -15,10 +16,10 @@ const configExpressApp = (app) => {
 
   app.use(express.json()) // para que la informacion del body pueda pasarse a json
   app.use(express.urlencoded({ extended: true }))
-  app.use(cookieParser(PRIVATE_KEY))
+  app.use(cookieParser(config.strategy.key))
   app.use(
     session({
-      secret: 'secret',
+      secret: config.strategy.privateSession,
       resave: true,
       saveUninitialized: true
     })

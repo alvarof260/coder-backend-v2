@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import passport from 'passport'
 
-import { COOKIE_NAME } from '../utils.js'
+import config from '../config/config.js'
 
 const router = Router()
 
@@ -12,7 +12,7 @@ router.post('/login', passport.authenticate('login', { session: false }), async 
     if (!req.user) {
       return res.status(500).render('errors/base', { error: 'error in server ' })
     }
-    res.cookie(COOKIE_NAME, req.user.token, { signed: true }).status(200).redirect('/products')
+    res.cookie(config.strategy.cookieName, req.user.token, { signed: true }).status(200).redirect('/products')
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }
@@ -35,7 +35,7 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
     if (!req.user) {
       return res.status(500).render('errors/base', { error: 'error in server ' })
     }
-    res.cookie(COOKIE_NAME, req.user.token, { signed: true }).status(200).redirect('/products')
+    res.cookie(config.strategy.cookieName, req.user.token, { signed: true }).status(200).redirect('/products')
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }
@@ -44,7 +44,7 @@ router.get('/githubcallback', passport.authenticate('github', { failureRedirect:
 // Ruta para manejar la desconexión de usuarios (logout)
 router.get('/logout', (req, res) => {
   // Destruir la sesión y redirigir a la página principal
-  res.clearCookie(COOKIE_NAME).redirect('/')
+  res.clearCookie(config.strategy.cookieName).redirect('/')
 })
 
 export default router

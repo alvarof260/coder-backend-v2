@@ -20,8 +20,8 @@ console.log(config.mongo.url)
 configExpressApp(app)
 
 try {
-  mongoose.connect('mongodb+srv://alvarof260:delfina2@cluster0.cmr6jcw.mongodb.net/', {
-    dbName: 'ecommerce'
+  mongoose.connect(config.mongo.url, {
+    dbName: config.mongo.dbName
   })
   console.log('DB connect.')
   // Routers de los endpoints de la API

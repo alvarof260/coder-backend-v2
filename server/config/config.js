@@ -8,7 +8,6 @@ program
 
 program.parse()
 
-console.log(program.opts().mode)
 const enviroment = program.opts().mode
 
 dotenv.config({
@@ -23,7 +22,8 @@ export default {
   config: {
     adminEmail: process.env.ADMIN_EMAIL,
     adminPassword: process.env.ADMIN_PASSWORD,
-    port: process.env.PORT
+    port: process.env.PORT,
+    persistence: process.env.PERSISTENCE
   },
   strategy: {
     key: process.env.PRIVATE_KEY,

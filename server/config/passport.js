@@ -4,14 +4,16 @@ import local from 'passport-local'
 import jwt from 'passport-jwt'
 import GitHubStrategy from 'passport-github2'
 
-import { userModel } from '../dao/models/user.js'
-import { cartModel } from '../dao/models/cart.js'
 import {
   createHash,
   generateToken,
   isValidPassword
 } from '../utils.js'
 import config from './config.js'
+import {
+  UserServices,
+  CartServices
+} from '../repositories/index.js'
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = jwt.Strategy
@@ -21,11 +23,11 @@ const cookieExtractor = req => (req && req.signedCookies) ? req.signedCookies[co
 const registerUser = async (req, username, password, done) => {
   try {
     const { first_name, last_name, email, age } = req.body
-    const user = await userModel.findOne({ email: username })
+    const user = await UserServices.getByEmail(username)
     if (user) {
       return done(null, false)
     }
-    const cartUser = await cartModel.create({})
+    const cartUser = await CartServices.create()
 
     const newUser = {
       first_name,
@@ -37,9 +39,7 @@ const registerUser = async (req, username, password, done) => {
       role: (email === config.config.adminEmail) ? 'admin' : 'user'
     }
 
-    console.log(newUser)
-
-    const result = await userModel.create(newUser)
+    const result = await UserServices.create(newUser)
     return done(null, result)
   } catch (err) {
     return done(err)
@@ -48,7 +48,7 @@ const registerUser = async (req, username, password, done) => {
 
 const loginUser = async (username, password, done) => {
   try {
-    const user = await userModel.findOne({ email: username })
+    const user = await UserServices.getByEmail(username)
     if (!user) {
       return done(null, user)
     }
@@ -74,13 +74,12 @@ const JWTTokens = async (jwt_payload, done) => {
 
 const githubcallback = async (accessToken, refreshToken, profile, done) => {
   try {
-    console.log(profile)
     const emailProfile = (profile.emails && profile.emails.length > 0) ? profile.emails[0].value : null
-    console.log(emailProfile)
-    const user = await userModel.findOne({ email: emailProfile })
-    console.log(user)
+
+    const user = await UserServices.getByEmail(emailProfile)
+
     if (!user) {
-      const cartUser = await cartModel.create({})
+      const cartUser = await CartServices.create()
       const newUser = {
         first_name: profile._json.name,
         last_name: 'user_github',
@@ -90,7 +89,7 @@ const githubcallback = async (accessToken, refreshToken, profile, done) => {
         cart: cartUser,
         role: 'user'
       }
-      const result = await userModel.create(newUser)
+      const result = await UserServices.create(newUser)
       const token = generateToken(result)
       result.token = token
       done(null, result)
@@ -132,7 +131,7 @@ const initializePassport = () => {
   })
 
   passport.deserializeUser(async (id, done) => {
-    const user = await userModel.findById(id)
+    const user = await UserServices.getById(id)
     done(null, user)
   })
 }

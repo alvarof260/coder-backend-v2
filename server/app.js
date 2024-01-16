@@ -15,8 +15,6 @@ import sessionRouter from './routes/session.js'
 
 const app = express()
 
-console.log(config.mongo.url)
-
 configExpressApp(app)
 
 try {

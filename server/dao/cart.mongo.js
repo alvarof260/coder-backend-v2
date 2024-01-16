@@ -6,6 +6,26 @@ export default class CartMongoDao {
     return result
   }
 
+  getProductsFromCart = async (req, res) => {
+    try {
+      const cid = req.params.cid
+      const result = await CartModel.findById(cid).populate('products.product').lean()
+      if (result === null) return res.status(404).json({ status: 'error', error: `cart id: ${cid} not found.` })
+      return {
+        statusCode: 200,
+        response: {
+          status: 'success',
+          payload: result
+        }
+      }
+    } catch (err) {
+      return {
+        statusCode: 500,
+        response: { status: 'error', error: err.message }
+      }
+    }
+  }
+
   create = async () => {
     const result = await CartModel.create({})
     return result

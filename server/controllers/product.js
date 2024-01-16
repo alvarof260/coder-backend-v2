@@ -1,7 +1,6 @@
-import config from '../config/config.js'
-import { productModel } from '../dao/models/product.js'
+import { ProductServices } from '../repositories/index.js'
 
-export const getProducts = async (req, res) => {
+/* export const getProducts = async (req, res) => {
   try {
     // Configuración de paginación predeterminada (limit y page)
     const limit = req.query.limit || 10 // Obtener el límite de productos por página
@@ -58,11 +57,11 @@ export const getProducts = async (req, res) => {
       response: { status: 'error', error: err.message } // Devolver un mensaje de error
     }
   }
-}
+} */
 
 export const getProductsController = async (req, res) => {
   try {
-    const result = await getProducts(req, res)
+    const result = await ProductServices.getAllPaginates(req, res)
     res.send(result.statusCode).json(result.response)
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
@@ -86,7 +85,7 @@ export const getProductsController = async (req, res) => {
 export const getProductByIdController = async (req, res) => {
   try {
     const pid = req.params.pid
-    const product = await productModel.findById(pid)
+    const product = await ProductServices.getById(pid)
     res.status(200).json({ status: 'success', payload: product })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
@@ -104,7 +103,7 @@ export const getProductByIdController = async (req, res) => {
 export const createProductController = async (req, res) => {
   try {
     const product = req.body
-    const productAdd = await productModel.create(product)
+    const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
@@ -125,7 +124,7 @@ export const updateProductController = async (req, res) => {
   try {
     const pid = req.params.pid
     const data = req.body
-    const productUpdated = await productModel.findOneAndUpdate({ _id: pid }, data, { returnDocument: 'after' })
+    const productUpdated = await ProductServices.update(pid, data)
     if (productUpdated) {
       // Si productUpdated existe, significa que se actualizó correctamente
       return res.status(200).json({ status: 'success', payload: productUpdated })
@@ -152,7 +151,7 @@ export const updateProductController = async (req, res) => {
 export const deleteProductController = async (req, res) => {
   try {
     const pid = req.params.pid
-    const productDeleted = await productModel.findByIdAndDelete({ _id: pid }, { returnDocument: 'after' })
+    const productDeleted = await ProductServices.delete(pid)
     if (productDeleted) {
       // Si productDeleted existe, significa que se eliminó correctamente
       return res.status(200).json({ status: 'success', payload: productDeleted })

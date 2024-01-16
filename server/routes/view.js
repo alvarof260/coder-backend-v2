@@ -1,9 +1,7 @@
 import { Router } from 'express'
 
-import { productModel } from '../dao/models/product.js'
-import { getProducts } from '../controllers/product.js'
 import config from '../config/config.js'
-import { getProductsFromCart } from '../controllers/cart.js'
+import { ProductServices, CartServices } from '../repositories/index.js'
 import { verifyToken } from '../utils.js'
 
 // import { ProductManager } from '../dao/fs/product-manager.js'
@@ -14,7 +12,7 @@ const router = Router()
 router.get('/', async (req, res) => {
   const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
   // Llamada a la función getProducts para obtener los datos
-  const result = await getProducts(req, res)
+  const result = await ProductServices.getAllPaginates(req, res)
 
   // Verificar el estado de la respuesta obtenida
   if (result.statusCode === 200) {
@@ -58,14 +56,13 @@ router.get('/', async (req, res) => {
 // manejos de productos que estan a la ventas
 router.get('/realtimeproducts', async (req, res) => {
   // const products = await PM.getProducts()
-  const products = await productModel.find().lean().exec()
+  const products = await ProductServices.getAllView()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })
 })
 
 // ver el carrito que a cada uno le pertenece
 router.get('/:cid([a-fA-F0-9]{24})', async (req, res) => {
-  const result = await getProductsFromCart(req, res)
-  console.log(result)
+  const result = await CartServices.getProductsFromCart(req, res)
   if (result.statusCode === 200) {
     res.render('cart', { title: 'CoderShop | My Cart', style: 'products.css', cart: result.response.payload })
   } else {

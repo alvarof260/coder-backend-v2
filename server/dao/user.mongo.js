@@ -1,13 +1,27 @@
 import { UserModel } from './models/user.js'
 
 export default class UserMongoDAO {
-  get = async (username) => {
-    const result = await UserModel.findOne({ email: username })
-    return result
+  getAll = async () => {
+    return await UserModel.find()
+  }
+
+  getByEmail = async (username) => {
+    return await UserModel.findOne({ email: username })
+  }
+
+  getById = async (id) => {
+    return await UserModel.findById(id)
   }
 
   create = async (user) => {
-    const result = await UserModel.create(user)
-    return result
+    return await UserModel.create(user)
+  }
+
+  update = async (id, user) => {
+    return await UserModel.findOneAndUpdate({ _id: id }, user, { returnDocument: 'after' })
+  }
+
+  delete = async (id) => {
+    return await UserModel.findOneAndDelete({ _id: id }, { returnDocument: 'after' })
   }
 }

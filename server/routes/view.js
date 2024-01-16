@@ -3,7 +3,7 @@ import { Router } from 'express'
 import { productModel } from '../dao/models/product.js'
 import { getProducts } from './product.js'
 import config from '../config/config.js'
-import { getProductsFromCart } from './cart.js'
+import { getProductsFromCart } from '../controllers/cart.js'
 import { verifyToken } from '../utils.js'
 
 // import { ProductManager } from '../dao/fs/product-manager.js'

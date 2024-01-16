@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 
 import configExpressApp from './config/server.js'
 import initializeSocket from './socket.js'
-import { messageModel } from './dao/models/message.js'
+import { MessageModel } from './dao/models/message.js'
 import { passportCall } from './utils.js'
 import config from './config/config.js'
 import productRouter from './routes/product.js'
@@ -34,7 +34,7 @@ try {
   app.use('/', viewSessionRouter)
 
   const httpServer = app.listen(config.config.port, () => console.log('http://localhost:8080'))
-  initializeSocket(httpServer, messageModel)
+  initializeSocket(httpServer, MessageModel)
 } catch (err) {
   console.error(err.message)
   process.exit(1)

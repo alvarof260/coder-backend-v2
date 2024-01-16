@@ -1,5 +1,6 @@
 import config from '../config/config.js'
 import { verifyToken } from '../utils.js'
+import UserDto from '../dto/user.js'
 
 export const loginViewController = (req, res) => {
   res.render('session/login', { title: 'CoderShop | Login', style: 'login.css' })
@@ -11,7 +12,8 @@ export const registerViewController = (req, res) => {
 
 export const profileViewController = (req, res) => {
   const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
-  res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user: decoded.user })
+  const user = new UserDto(decoded.user)
+  res.render('session/profile', { title: 'CoderShop | Profile', style: 'login.css', user })
 }
 
 export const failRegisterViewController = (req, res) => {

@@ -8,11 +8,9 @@ import {
   updateQuantityProductController as updateQuantityProduct,
   deleteCartController as deleteCart
 } from '../controllers/cart.js'
-// import { CartManager } from '../dao/fs/cart-manager.js'
+import { handlePolicies } from '../middlewares/auth.js'
 
 const router = Router()
-
-// const CM = new CartManager('./server/data/carts.json')
 
 // crear el carrito
 router.post('/', createCart)
@@ -21,7 +19,7 @@ router.post('/', createCart)
 router.get('/:cid([a-fA-F0-9]{24})', getByIdCart)
 
 // Actualizar los productos que estan en el carrito
-router.post('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', updateProductFromCart)
+router.post('/:cid([a-fA-F0-9]{24})/product/:pid([a-fA-F0-9]{24})', handlePolicies(['USER']), updateProductFromCart)
 
 // borrar un producto de un carrito
 router.delete('/:cid([a-fA-F0-9]{24})/products/:pid([a-fA-F0-9]{24})', deleteProductFromCart)

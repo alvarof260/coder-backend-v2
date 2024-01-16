@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import { productModel } from '../dao/models/product.js'
-import { getProducts } from './product.js'
+import { getProducts } from '../controllers/product.js'
 import config from '../config/config.js'
 import { getProductsFromCart } from '../controllers/cart.js'
 import { verifyToken } from '../utils.js'

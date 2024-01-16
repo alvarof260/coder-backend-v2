@@ -1,50 +1,28 @@
 import { Router } from 'express'
 import passport from 'passport'
-
-import config from '../config/config.js'
+import {
+  loginController as login,
+  registerController as register,
+  githubController as github,
+  githubCallbackController as githubCallback,
+  logoutController as logout
+} from '../controllers/session.js'
 
 const router = Router()
 
 // Ruta para manejar la autenticación de usuarios
-router.post('/login', passport.authenticate('login', { session: false }), async (req, res) => {
-  try {
-    console.log(req.user)
-    if (!req.user) {
-      return res.status(500).render('errors/base', { error: 'error in server ' })
-    }
-    res.cookie(config.strategy.cookieName, req.user.token, { signed: true }).status(200).redirect('/products')
-  } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
-  }
-})
+router.post('/login', passport.authenticate('login', { session: false }), login)
 
 // Ruta para manejar el registro de usuarios
-router.post('/register', passport.authenticate('register', { session: false }), async (req, res) => {
-  res.redirect('/')
-})
+router.post('/register', passport.authenticate('register', { session: false }), register)
 
 // Ruta para manejar el registro desde cuenta de github
-router.get('/github', passport.authenticate('github'), (req, res) => {
-
-})
+router.get('/github', passport.authenticate('github'), github)
 
 // Ruta donde recibe los datos de github
-router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
-  console.log(req.user)
-  try {
-    if (!req.user) {
-      return res.status(500).render('errors/base', { error: 'error in server ' })
-    }
-    res.cookie(config.strategy.cookieName, req.user.token, { signed: true }).status(200).redirect('/products')
-  } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
-  }
-})
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/' }), githubCallback)
 
 // Ruta para manejar la desconexión de usuarios (logout)
-router.get('/logout', (req, res) => {
-  // Destruir la sesión y redirigir a la página principal
-  res.clearCookie(config.strategy.cookieName).redirect('/')
-})
+router.get('/logout', logout)
 
 export default router

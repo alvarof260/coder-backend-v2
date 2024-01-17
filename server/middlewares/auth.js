@@ -1,4 +1,5 @@
 export const handlePolicies = (policies) => (req, res, next) => {
+  console.log(req)
   if (policies.includes('PUBLIC')) return next()
   if (!req.user) return res.status(401).redirect('/')
   if (policies.length > 0) {

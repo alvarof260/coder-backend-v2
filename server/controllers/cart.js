@@ -3,6 +3,8 @@ import {
   CartServices,
   ProductServices
 } from '../repositories/index.js'
+import config from '../config/config.js'
+import { generateCode, verifyToken } from '../utils.js'
 
 export const createCartController = async (req, res) => {
   try {
@@ -153,6 +155,44 @@ export const deleteCartController = async (req, res) => {
     cart.products = []
     const cartUpdated = await CartServices.update(cid, cart)
     res.status(200).json({ status: 'success', payload: cartUpdated })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
+}
+export const purchasedCartController = async (req, res) => {
+  try {
+    const cid = req.params.cid
+
+    const cart = await CartServices.getById(cid)
+
+    if (cart === null) return res.status(404).json({ status: 'error', error: `Cart id: ${cid} not found.` })
+
+    let total = 0
+    const outOfStockProducts = []
+    for (let index = 0; index < cart.products.length; index++) {
+      console.log(cart.products[index])
+      const product = await ProductServices.getById(cart.products[index].product)
+      if (product === null) return res.status(404).json({ status: 'error', error: `Product id: ${cart.products[index].product} not found.` })
+      if (cart.products[index].quantity > product.stock) {
+        outOfStockProducts.push(cart.products[index])
+        continue
+      }
+      product.stock -= cart.products[index].quantity
+      total += product.price * cart.products[index].quantity
+      await ProductServices.update(product._id, product)
+    }
+
+    // Actualizar el carrito para eliminar los productos que se han comprado y agregar los productos que están fuera de stock
+    cart.products = outOfStockProducts
+    await CartServices.update(cart._id, cart)
+
+    const ticket = await CartServices.createTicket({
+      code: generateCode(),
+      amount: total,
+      purcharser: req.user.email
+    })
+
+    res.status(201).json({ status: 'success', payload: ticket })
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message })
   }

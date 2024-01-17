@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { passportCall } from '../utils.js'
-import { handlePolicies } from '../middlewares/policies.js'
+import { handlePolicies } from '../middlewares/auth.js'
 
 const router = Router()
 

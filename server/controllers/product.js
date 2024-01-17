@@ -1,4 +1,7 @@
 import { ProductServices } from '../repositories/index.js'
+import CustomError from '../services/errors/CustomError.js'
+import EErrors from '../services/errors/enums.js'
+import { generateProductInfoError } from '../services/errors/info.js'
 import { generateProducts } from '../utils.js'
 
 /* export const getProducts = async (req, res) => {
@@ -104,6 +107,15 @@ export const getProductByIdController = async (req, res) => {
 export const createProductController = async (req, res) => {
   try {
     const product = req.body
+    if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock || !product.status || !product.category) {
+      const error = CustomError.createError({
+        name: 'Missing fields',
+        cause: generateProductInfoError(product),
+        message: 'the product not have all fields',
+        error: EErrors.INVALID_TYPES_ERROR
+      })
+      return res.status(400).json({ status: 'error', error: error.cause })
+    }
     const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {

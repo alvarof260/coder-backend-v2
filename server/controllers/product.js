@@ -1,4 +1,5 @@
 import { ProductServices } from '../repositories/index.js'
+import { generateProducts } from '../utils.js'
 
 /* export const getProducts = async (req, res) => {
   try {
@@ -170,4 +171,14 @@ export const deleteProductController = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ status: 'error', error: 'Error deleting product.' })
     } */
+}
+
+export const mockProductsController = async (req, res) => {
+  try {
+    const mockProducts = generateProducts()
+    const products = await ProductServices.createMany(mockProducts)
+    res.status(201).json({ status: 'success', payload: products })
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message })
+  }
 }

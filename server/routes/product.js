@@ -5,7 +5,8 @@ import {
   getProductByIdController as getProductByID,
   createProductController as createProduct,
   updateProductController as updateProduct,
-  deleteProductController as deleteProduct
+  deleteProductController as deleteProduct,
+  mockProductsController as mockProducts
 } from '../controllers/product.js'
 
 /* import { ProductManager } from '../dao/fs/product-manager.js'
@@ -29,5 +30,7 @@ router.put('/:pid([a-fA-F0-9]{24})', handlePolicies(['PREMIUM', 'ADMIN']), updat
 
 // Eliminar un producto de la base de datos
 router.delete('/:pid([a-fA-F0-9]{24})', handlePolicies(['PREMIUM', 'ADMIN']), deleteProduct)
+
+router.get('/create/mockProducts', mockProducts)
 
 export default router

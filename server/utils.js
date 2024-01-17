@@ -3,6 +3,8 @@ import { dirname } from 'node:path'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
+import { fakerES as faker } from '@faker-js/faker'
+
 import config from './config/config.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -51,6 +53,22 @@ export const generateCode = () => {
     code += chars.charAt(Math.floor(Math.random() * chars.length))
   }
   return code
+}
+
+export const generateProducts = () => {
+  const products = []
+  for (let i = 0; i < 100; i++) {
+    products.push({
+      title: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      price: parseFloat(faker.commerce.price()),
+      thumbnail: [faker.image.url()],
+      code: faker.string.alphanumeric({ length: { min: 5, max: 10 } }),
+      stock: faker.number.int({ max: 100 }),
+      category: faker.commerce.department()
+    })
+  }
+  return products
 }
 
 /*

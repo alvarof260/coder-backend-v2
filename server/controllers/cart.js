@@ -3,8 +3,7 @@ import {
   CartServices,
   ProductServices
 } from '../repositories/index.js'
-import config from '../config/config.js'
-import { generateCode, verifyToken } from '../utils.js'
+import { generateCode } from '../utils.js'
 
 export const createCartController = async (req, res) => {
   try {

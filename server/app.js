@@ -6,10 +6,12 @@ import initializeSocket from './socket.js'
 import { MessageModel } from './dao/models/message.js'
 import { passportCall } from './utils.js'
 import config from './config/config.js'
+import logger from './winston.js'
 import productRouter from './routes/product.js'
 import cartRouter from './routes/cart.js'
-import viewsRouter from './routes/view.js'
+import loggerRouter from './routes/logger.js'
 import chatRouter from './routes/chat.js'
+import viewsRouter from './routes/view.js'
 import viewSessionRouter from './routes/view-session.js'
 import sessionRouter from './routes/session.js'
 
@@ -26,14 +28,15 @@ try {
   app.use('/api/session', sessionRouter)
   app.use('/api/products', productRouter)
   app.use('/api/carts', cartRouter)
+  app.use('/loggerTest', loggerRouter)
   app.use('/chat', passportCall('jwt'), chatRouter)
   app.use('/products', passportCall('jwt'), viewsRouter)
   app.use('/carts', passportCall('jwt'), viewsRouter)
   app.use('/', viewSessionRouter)
 
-  const httpServer = app.listen(config.config.port, () => console.log('http://localhost:8080'))
+  const httpServer = app.listen(config.config.port, () => logger.info('http://localhost:8080'))
   initializeSocket(httpServer, MessageModel)
 } catch (err) {
-  console.error(err.message)
+  logger.error(err.message)
   process.exit(1)
 }

@@ -4,6 +4,7 @@ import {
   ProductServices
 } from '../repositories/index.js'
 import { generateCode } from '../utils.js'
+import logger from '../winston.js'
 
 export const createCartController = async (req, res) => {
   try {
@@ -169,7 +170,7 @@ export const purchasedCartController = async (req, res) => {
     let total = 0
     const outOfStockProducts = []
     for (let index = 0; index < cart.products.length; index++) {
-      console.log(cart.products[index])
+      logger.info(cart.products[index])
       const product = await ProductServices.getById(cart.products[index].product)
       if (product === null) return res.status(404).json({ status: 'error', error: `Product id: ${cart.products[index].product} not found.` })
       if (cart.products[index].quantity > product.stock) {

@@ -8,7 +8,7 @@ program
 
 program.parse()
 
-const enviroment = program.opts().mode
+export const enviroment = program.opts().mode
 
 dotenv.config({
   path: enviroment === 'production' ? './.env.production' : './.env.development'

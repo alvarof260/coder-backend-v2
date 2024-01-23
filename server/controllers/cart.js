@@ -39,9 +39,7 @@ export const getByIdCartController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.warn(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
     res.status(200).json({ status: 'success', payload: cart })
   } catch (err) {
@@ -204,9 +202,7 @@ export const updateCartController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.warn(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
     const products = req.body.products
     if (!products) {
@@ -217,9 +213,7 @@ export const updateCartController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.warn(error.cause)
-      return res
-        .status(400)
-        .json({ status: 'error', error: error.message })
+      return res.status(400).json({ status: 'error', error: error.message })
     }
     // verificar cada producto para actualizar
     for (const product of products) {
@@ -310,9 +304,7 @@ export const updateQuantityProductController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.warn(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
     const quantityToUpdate = req.body.quantity
     if (!quantityToUpdate) {
@@ -323,9 +315,7 @@ export const updateQuantityProductController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(400)
-        .json({ status: 'error', error: error.message })
+      return res.status(400).json({ status: 'error', error: error.message })
     }
     if (typeof quantityToUpdate !== 'number') {
       const error = CustomError.createError({
@@ -335,9 +325,7 @@ export const updateQuantityProductController = async (req, res) => {
         code: EErrors.INVALID_TYPES_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(400)
-        .json({ status: 'error', error: error.message })
+      return res.status(400).json({ status: 'error', error: error.message })
     }
     if (quantityToUpdate === 0) {
       const error = CustomError.createError({
@@ -347,9 +335,7 @@ export const updateQuantityProductController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(400)
-        .json({ status: 'error', error: error.message })
+      return res.status(400).json({ status: 'error', error: error.message })
     }
     const productIndex = cart.products.findIndex(
       (el) => el.product.toString() === pid
@@ -364,9 +350,7 @@ export const updateQuantityProductController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
     const cartUpdated = await CartServices.update(cid, cart)
     res.status(200).json({ status: 'success', payload: cartUpdated })
@@ -395,9 +379,7 @@ export const deleteCartController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
     cart.products = []
     const cartUpdated = await CartServices.update(cid, cart)
@@ -429,9 +411,7 @@ export const purchasedCartController = async (req, res) => {
         code: EErrors.INVALID_DATA_ERROR
       })
       logger.error(error.cause)
-      return res
-        .status(404)
-        .json({ status: 'error', error: error.message })
+      return res.status(404).json({ status: 'error', error: error.message })
     }
 
     let total = 0

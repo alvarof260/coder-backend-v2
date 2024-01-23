@@ -72,7 +72,8 @@ export const getProductsController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error fetching products [Internal Error 500], Please try again later.',
+      message:
+        'Error fetching products [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)
@@ -113,7 +114,8 @@ export const getProductByIdController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error fetching product [Internal Error 500], Please try again later.',
+      message:
+        'Error fetching product [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)
@@ -132,7 +134,16 @@ export const getProductByIdController = async (req, res) => {
 export const createProductController = async (req, res) => {
   try {
     const product = req.body
-    if (!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock || !product.status || !product.category) {
+    if (
+      !product.title ||
+      !product.description ||
+      !product.price ||
+      !product.thumbnail ||
+      !product.code ||
+      !product.stock ||
+      !product.status ||
+      !product.category
+    ) {
       const error = CustomError.createError({
         name: 'Missing fields',
         cause: generateProductInfoError(product),
@@ -148,7 +159,8 @@ export const createProductController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error adding product [Internal Error 500], Please try again later.',
+      message:
+        'Error adding product [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)
@@ -173,7 +185,9 @@ export const updateProductController = async (req, res) => {
     const productUpdated = await ProductServices.update(pid, data)
     if (productUpdated) {
       // Si productUpdated existe, significa que se actualizó correctamente
-      return res.status(200).json({ status: 'success', payload: productUpdated })
+      return res
+        .status(200)
+        .json({ status: 'success', payload: productUpdated })
     } else {
       // Si productUpdated es null, significa que no se encontró el producto para actualizar
       const error = CustomError.createError({
@@ -189,7 +203,8 @@ export const updateProductController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error updating product [Internal Error 500], Please try again later.',
+      message:
+        'Error updating product [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)
@@ -214,7 +229,9 @@ export const deleteProductController = async (req, res) => {
     const productDeleted = await ProductServices.delete(pid)
     if (productDeleted) {
       // Si productDeleted existe, significa que se eliminó correctamente
-      return res.status(200).json({ status: 'success', payload: productDeleted })
+      return res
+        .status(200)
+        .json({ status: 'success', payload: productDeleted })
     } else {
       // Si productDeleted es null, significa que no se encontró el producto para eliminar
       const error = CustomError.createError({
@@ -230,7 +247,8 @@ export const deleteProductController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error deleting product [Internal Error 500], Please try again later.',
+      message:
+        'Error deleting product [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)
@@ -265,7 +283,8 @@ export const mockProductsController = async (req, res) => {
     const error = CustomError.createError({
       name: 'Database error',
       cause: err.message,
-      message: 'Error adding mockproducts [Internal Error 500], Please try again later.',
+      message:
+        'Error adding mockproducts [Internal Error 500], Please try again later.',
       error: EErrors.DATABASE_ERROR
     })
     logger.error(error.cause)

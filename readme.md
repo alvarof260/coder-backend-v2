@@ -4,10 +4,10 @@ Este proyecto está en desarrollo y hay varias mejoras pendientes:
 
 ### Mejoras de código y rendimiento
 
-- [ ] Manejo de errores en toda la aplicación
-- [ ] Customizar cada error en toda la aplicación
+- [ x ] Manejo de errores en toda la aplicación
+- [ x ] Customizar cada error en toda la aplicación
 - [ ] Compresión de datos
-- [ ] Mejora de rendimiento
+- [ x ] Mejora de rendimiento
 - [ ] Optimización de código y lógica
 - [ ] Verificar con TDD
 

@@ -32,7 +32,6 @@ const createLogger = (env) => {
           filename: './logs/errors.log',
           format: winston.format.combine(
             winston.format.timestamp(),
-            winston.format.colorize(),
             winston.format.simple()
           )
         }),

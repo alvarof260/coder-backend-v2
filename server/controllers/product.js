@@ -3,6 +3,7 @@ import CustomError from '../services/errors/CustomError.js'
 import EErrors from '../services/errors/enums.js'
 import { generateProductInfoError } from '../services/errors/info.js'
 import { generateProducts } from '../utils.js'
+import logger from '../winston.js'
 
 /* export const getProducts = async (req, res) => {
   try {
@@ -111,10 +112,11 @@ export const createProductController = async (req, res) => {
       const error = CustomError.createError({
         name: 'Missing fields',
         cause: generateProductInfoError(product),
-        message: 'the product not have all fields',
+        message: 'the product is missing fields, try again.',
         error: EErrors.INVALID_TYPES_ERROR
       })
-      return res.status(400).json({ status: 'error', error: error.cause })
+      logger.error(error.cause)
+      return res.status(400).json({ status: 'error', error: error.message })
     }
     const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })

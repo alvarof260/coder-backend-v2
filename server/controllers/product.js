@@ -69,7 +69,14 @@ export const getProductsController = async (req, res) => {
     const result = await ProductServices.getAllPaginates(req, res)
     res.send(result.statusCode).json(result.response)
   } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error fetching products [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
   /*  try {
       const response = await PM.getProducts()
@@ -91,9 +98,26 @@ export const getProductByIdController = async (req, res) => {
   try {
     const pid = req.params.pid
     const product = await ProductServices.getById(pid)
+    if (product == null) {
+      const error = CustomError.createError({
+        name: 'Product not found',
+        cause: 'User tried to get a product that does not exist.',
+        message: `Product not found by id: ${pid}.`,
+        error: EErrors.INVALID_DATA_ERROR
+      })
+      logger.error(error.cause)
+      return res.status(404).json({ status: 'error', error: error.message })
+    }
     res.status(200).json({ status: 'success', payload: product })
   } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error fetching product [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
   /* try {
       const pid = parseInt(req.params.pid)
@@ -112,7 +136,7 @@ export const createProductController = async (req, res) => {
       const error = CustomError.createError({
         name: 'Missing fields',
         cause: generateProductInfoError(product),
-        message: 'the product is missing fields, try again.',
+        message: 'Missing unfilled fields, try again.',
         error: EErrors.INVALID_TYPES_ERROR
       })
       logger.error(error.cause)
@@ -121,7 +145,14 @@ export const createProductController = async (req, res) => {
     const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error adding product [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
   /*  try {
       const product = req.body
@@ -145,10 +176,24 @@ export const updateProductController = async (req, res) => {
       return res.status(200).json({ status: 'success', payload: productUpdated })
     } else {
       // Si productUpdated es null, significa que no se encontró el producto para actualizar
-      return res.status(404).json({ status: 'error', error: 'Product not found or not updated' })
+      const error = CustomError.createError({
+        name: 'Product not found',
+        cause: 'User tried to update a product that does not exist.',
+        message: `Product not found by id: ${pid}.`,
+        error: EErrors.INVALID_DATA_ERROR
+      })
+      logger.error(error.cause)
+      return res.status(404).json({ status: 'error', error: error.message })
     }
   } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error updating product [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
   /*  try {
       const pid = parseInt(req.params.pid)
@@ -172,10 +217,24 @@ export const deleteProductController = async (req, res) => {
       return res.status(200).json({ status: 'success', payload: productDeleted })
     } else {
       // Si productDeleted es null, significa que no se encontró el producto para eliminar
-      return res.status(404).json({ status: 'error', error: 'Product not found or not deleted' })
+      const error = CustomError.createError({
+        name: 'Product not found',
+        cause: 'User tried to delete a product that does not exist.',
+        message: `Product not found by id: ${pid}.`,
+        error: EErrors.INVALID_DATA_ERROR
+      })
+      logger.error(error.cause)
+      return res.status(404).json({ status: 'error', error: error.message })
     }
   } catch (err) {
-    res.status(500).json({ status: 'error', error: err.message })
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error deleting product [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
   /* try {
       const pid = parseInt(req.params.pid)
@@ -190,9 +249,26 @@ export const deleteProductController = async (req, res) => {
 export const mockProductsController = async (req, res) => {
   try {
     const mockProducts = generateProducts()
+    if (!mockProducts) {
+      const error = CustomError.createError({
+        name: 'Error generating products',
+        cause: 'Error generating products.',
+        message: 'Error generating products.',
+        error: EErrors.INVALID_DATA_ERROR
+      })
+      logger.error(error.cause)
+      return res.status(500).json({ status: 'error', error: error.message })
+    }
     const products = await ProductServices.createMany(mockProducts)
     res.status(201).json({ status: 'success', payload: products })
   } catch (err) {
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message: 'Error adding mockproducts [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
     res.status(500).json({ status: 'error', error: err.message })
   }
 }

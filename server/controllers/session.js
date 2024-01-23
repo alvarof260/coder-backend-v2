@@ -1,4 +1,5 @@
 import config from '../config/config.js'
+import CustomError from '../services/errors/CustomError.js'
 
 export const loginController = async (req, res) => {
   try {

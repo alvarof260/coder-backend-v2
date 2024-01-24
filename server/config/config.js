@@ -31,6 +31,10 @@ export default {
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     privateSession: process.env.PRIVATE_SESSION
+  },
+  email: {
+    user: process.env.EMAIL_GMAIL,
+    password: process.env.EMAIL_PASSWORD
   }
 
 }

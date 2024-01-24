@@ -5,7 +5,10 @@ import {
   registerController as register,
   githubController as github,
   githubCallbackController as githubCallback,
-  logoutController as logout
+  logoutController as logout,
+  forgetPasswordController as forgetPassword,
+  verifyTokenController as verifyToken,
+  resetPasswordController as resetPassword
 } from '../controllers/session.js'
 
 const router = Router()
@@ -15,6 +18,13 @@ router.post('/login', passport.authenticate('login', { session: false }), login)
 
 // Ruta para manejar el registro de usuarios
 router.post('/register', passport.authenticate('register', { session: false }), register)
+
+// Ruta para manejar el olvido de contraseña
+router.post('/forget-password', forgetPassword)
+
+router.get('/verify-token/:token', verifyToken)
+
+router.post('/reset-password/:token', resetPassword)
 
 // Ruta para manejar el registro desde cuenta de github
 router.get('/github', passport.authenticate('github'), github)

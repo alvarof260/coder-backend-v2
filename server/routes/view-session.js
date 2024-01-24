@@ -5,7 +5,8 @@ import {
   registerViewController as register,
   profileViewController as profile,
   failRegisterViewController as failRegister,
-  failLoginViewController as failLogin
+  failLoginViewController as failLogin,
+  forgetPasswordViewController as forgetPassword
 } from '../controllers/view.js'
 
 const router = Router()
@@ -15,6 +16,11 @@ router.get('/', login)
 
 // vista de register
 router.get('/register', register)
+
+// vista de forget password
+router.get('/forget-password', forgetPassword)
+
+// vista de reset password
 
 // vista de perfil
 router.get('/profile', passportCall('jwt'), profile)

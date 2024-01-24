@@ -16,6 +16,13 @@ export const registerViewController = (req, res) => {
   })
 }
 
+export const forgetPasswordViewController = (req, res) => {
+  res.render('session/forget-password', {
+    title: 'CoderShop | Forget Password',
+    style: 'login.css'
+  })
+}
+
 export const profileViewController = (req, res) => {
   const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
   const user = new UserDto(decoded.user)

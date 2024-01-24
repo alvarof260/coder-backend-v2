@@ -16,6 +16,7 @@ import chatRouter from './routes/chat.js'
 import viewsRouter from './routes/view.js'
 import viewSessionRouter from './routes/view-session.js'
 import sessionRouter from './routes/session.js'
+import userRouter from './routes/user.js'
 
 if (cluster.isPrimary) {
   for (let i = 0; i < cpus().length; i++) {
@@ -39,6 +40,7 @@ if (cluster.isPrimary) {
     app.use('/api/session', sessionRouter)
     app.use('/api/products', productRouter)
     app.use('/api/carts', cartRouter)
+    app.use('/api/users', userRouter)
     app.use('/loggerTest', loggerRouter)
     app.use('/chat', passportCall('jwt'), chatRouter)
     app.use('/products', passportCall('jwt'), viewsRouter)

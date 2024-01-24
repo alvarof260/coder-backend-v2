@@ -68,9 +68,9 @@ export const updateProductFromCartController = async (req, res) => {
     const cid = req.params.cid
     const pid = req.params.pid
 
-    const exists = await ProductServices.getById(pid)
+    const product = await ProductServices.getById(pid)
 
-    if (!exists) {
+    if (!product) {
       const error = CustomError.createError({
         name: 'Error product does not exists.',
         cause: 'User tried to add a product that does not exists.',
@@ -80,6 +80,8 @@ export const updateProductFromCartController = async (req, res) => {
       logger.warn(error.cause)
       return res.status(404).json({ status: 'error', error: error.message })
     }
+
+    if (product.owner === req.user._id) res.status(403).json({ status: 'error', error: 'You cannot add your own product to the cart.' })
 
     const cartToAdd = await CartServices.getById(cid)
     if (cartToAdd === null) {

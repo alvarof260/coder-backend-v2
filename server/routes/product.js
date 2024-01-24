@@ -23,7 +23,7 @@ router.get('/', handlePolicies(['USER', 'PREMIUM', 'ADMIN']), getProducts)
 router.get('/:pid([a-fA-F0-9]{24})', handlePolicies(['USER', 'PREMIUM', 'ADMIN']), getProductByID)
 
 // Agregar un producto a la base de datos
-router.post('/', createProduct)
+router.post('/', handlePolicies(['USER', 'PREMIUM', 'ADMIN']), createProduct)
 
 // Obtener un producto por su id y actualizar datos
 router.put('/:pid([a-fA-F0-9]{24})', handlePolicies(['PREMIUM', 'ADMIN']), updateProduct)

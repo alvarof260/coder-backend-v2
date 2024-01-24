@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import config from '../config/config.js'
 import { UserPasswordServices, UserServices } from '../repositories/index.js'
-import { generateCode, createHash } from '../utils.js'
+import { generateCode, createHash, isValidPassword } from '../utils.js'
 import logger from '../winston.js'
 
 export const loginController = async (req, res) => {
@@ -90,13 +90,22 @@ export const verifyTokenController = async (req, res) => {
     res.status(500).json({ status: 'error', error: err.message })
   }
 }
+
 export const resetPasswordController = async (req, res) => {
   try {
     const { token } = req.params
-    const { password } = req.body
+    const { password, passwordConfirmation } = req.body
+
+    if (password !== passwordConfirmation) {
+      return res.status(400).json({ status: 'error', error: 'passwords do not match' })
+    }
 
     const userPassword = await UserPasswordServices.getByToken(token)
     const user = await UserServices.getByEmail(userPassword.email)
+    if (isValidPassword(user, password)) {
+      return res.status(400).json({ status: 'error', error: 'You cannot enter a password that you have already used.' })
+    }
+
     const userUpdated = await UserServices.update(user._id, { password: createHash(password) })
     if (userUpdated == null) {
       return res.status(404).json({ status: 'error', error: 'user not found' })

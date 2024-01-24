@@ -5,6 +5,7 @@ const initializeSocket = (httpServer, model) => {
   socketServer.on('connection', socketClient => {
     console.log('New Client connected')
     socketClient.on('listProductUpdate', (data) => {
+      console.log(data)
       socketServer.emit('listProduct', data)
     })
     socketClient.on('message', async data => {

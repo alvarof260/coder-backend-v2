@@ -2,7 +2,8 @@ import { Router } from 'express'
 
 import config from '../config/config.js'
 import { ProductServices, CartServices } from '../repositories/index.js'
-import { verifyToken } from '../utils.js'
+import { passportCall, verifyToken } from '../utils.js'
+import { handlePolicies } from '../middlewares/auth.js'
 
 // import { ProductManager } from '../dao/fs/product-manager.js'
 
@@ -23,7 +24,7 @@ router.get('/', async (req, res) => {
     for (let index = 1; index <= result.response.totalPages; index++) {
       if (!req.query.page) {
         // Construir el enlace para la página actual
-        link = `http://${req.hostname}:${config.config.port}${req.originalUrl}&page=${index}`
+        link = `http://${req.hostname}:${config.config.port}${req.originalUrl}?page=${index}`
       } else {
         // Modificar la URL para la página actual si existe una página en la consulta
         const modifiedUrl = req.originalUrl.replace(`page=${req.query.page}`, `page=${index}`)
@@ -54,7 +55,7 @@ router.get('/', async (req, res) => {
 })
 
 // manejos de productos que estan a la ventas
-router.get('/realtimeproducts', async (req, res) => {
+router.get('/realtimeproducts', passportCall('jwt'), handlePolicies(['USER', 'PREMIUM', 'ADMIN']), async (req, res) => {
   // const products = await PM.getProducts()
   const products = await ProductServices.getAllView()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })

@@ -4,7 +4,7 @@ import paginate from 'mongoose-paginate-v2'
 const productCollection = 'products'
 
 const productSchema = new mongoose.Schema({
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: 'admin' },
+  owner: { type: String, ref: 'User', default: 'admin', required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },

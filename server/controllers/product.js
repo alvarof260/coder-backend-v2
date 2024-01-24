@@ -67,7 +67,8 @@ import logger from '../winston.js'
 export const getProductsController = async (req, res) => {
   try {
     const result = await ProductServices.getAllPaginates(req, res)
-    res.send(result.statusCode).json(result.response)
+    logger.info(req.user, 'user in getProductsController')
+    res.status(result.statusCode).json(result.response)
   } catch (err) {
     const error = CustomError.createError({
       name: 'Database error',
@@ -133,12 +134,12 @@ export const getProductByIdController = async (req, res) => {
 
 export const createProductController = async (req, res) => {
   try {
+    if (req.user.role === 'user') res.status(403).json({ status: 'error', error: 'You are not allowed to create products.' })
     const product = req.body
     if (
       !product.title ||
       !product.description ||
       !product.price ||
-      !product.thumbnail ||
       !product.code ||
       !product.stock ||
       !product.status ||
@@ -153,6 +154,8 @@ export const createProductController = async (req, res) => {
       logger.error(error.cause)
       return res.status(400).json({ status: 'error', error: error.message })
     }
+    product.owner = req.user._id
+
     const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
   } catch (err) {
@@ -182,6 +185,19 @@ export const updateProductController = async (req, res) => {
   try {
     const pid = req.params.pid
     const data = req.body
+
+    const product = await ProductServices.getById(pid)
+
+    // Verifica si el usuario es premium y si es el propietario del producto
+    if (req.user.role === 'premium' && product.owner !== req.user._id) {
+      return res.status(403).json({ status: 'error', error: 'You do not have permission to update this product because you are not the owner.' })
+    }
+
+    // Verifica si el usuario es un administrador
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ status: 'error', error: 'You do not have permission to update this product because you are not an administrator.' })
+    }
+
     const productUpdated = await ProductServices.update(pid, data)
     if (productUpdated) {
       // Si productUpdated existe, significa que se actualizó correctamente
@@ -210,22 +226,17 @@ export const updateProductController = async (req, res) => {
     logger.error(error.cause)
     res.status(500).json({ status: 'error', error: error.message })
   }
-  /*  try {
-      const pid = parseInt(req.params.pid)
-      const data = req.body
-      const verification = verifyProductPartial(data)
-      if (verification) return res.status(400).json({ status: 'error', error: verification })
-      const productUpdated = await PM.updateProduct(pid, data)
-      if (!productUpdated) return res.status(404).json({ status: 'error', error: `Product not found by id: ${pid}.` })
-      return res.status(200).json({ status: 'sucess', payload: productUpdated })
-    } catch (error) {
-      return res.status(500).json({ status: 'error', error: 'Error updating product.' })
-    } */
 }
 
 export const deleteProductController = async (req, res) => {
   try {
     const pid = req.params.pid
+
+    const product = await ProductServices.getById(pid)
+    if (req.user.role === 'premium' && product.owner !== req.user._id) res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not the owner.' })
+
+    if (req.user.role !== 'admin') res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not an administrator.' })
+
     const productDeleted = await ProductServices.delete(pid)
     if (productDeleted) {
       // Si productDeleted existe, significa que se eliminó correctamente
@@ -262,6 +273,23 @@ export const deleteProductController = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ status: 'error', error: 'Error deleting product.' })
     } */
+}
+
+export const getProductsRealTimeController = async (req, res) => {
+  try {
+    const result = await ProductServices.getAllView()
+    res.status(200).json(result)
+  } catch (err) {
+    const error = CustomError.createError({
+      name: 'Database error',
+      cause: err.message,
+      message:
+        'Error fetching products [Internal Error 500], Please try again later.',
+      error: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
+  }
 }
 
 export const mockProductsController = async (req, res) => {

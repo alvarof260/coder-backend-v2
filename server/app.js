@@ -2,6 +2,8 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cluster from 'cluster'
 import { cpus } from 'os'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUI from 'swagger-ui-express'
 
 import configExpressApp from './config/server.js'
 import initializeSocket from './socket.js'
@@ -31,6 +33,24 @@ if (cluster.isPrimary) {
 
   configExpressApp(app)
 
+  const swaggerOptions = {
+    definition: {
+      openapi: '3.1.0',
+      info: {
+        title: 'Ecommerce coder shop',
+        description: 'API para el proyecto final del curso de backend de coderhouse',
+        contact: {
+          name: 'Alvaro Estanislao',
+          email: 'alvarof260@gmail.com'
+        },
+        version: '4.0.0'
+      }
+    },
+    apis: ['./docs/**/*.yaml']
+  }
+
+  const swaggerDocs = swaggerJSDoc(swaggerOptions)
+
   try {
     mongoose.connect(config.mongo.url, {
       dbName: config.mongo.dbName
@@ -45,6 +65,7 @@ if (cluster.isPrimary) {
     app.use('/chat', passportCall('jwt'), chatRouter)
     app.use('/products', passportCall('jwt'), viewsRouter)
     app.use('/carts', passportCall('jwt'), viewsRouter)
+    app.use('/apiDocs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
     app.use('/', viewSessionRouter)
 
     const httpServer = app.listen(config.config.port, () => logger.info('http://localhost:8080'))

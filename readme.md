@@ -15,9 +15,10 @@ Este proyecto está en desarrollo y hay varias mejoras pendientes:
 
 - [ ] Envío de correo electrónico al comprador
 - [ ] Cambio de lógica del chat
-- [ ] Implementación de clusters en el servidor
+- [ x ] Implementación de clusters en el servidor
 
 ### Mejoras visuales
 
 - [ ] Mejora visual del navbar
 - [ ] Agregar enlace al chat
+- [ ] Agregar enlace al realtime

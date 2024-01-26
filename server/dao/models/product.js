@@ -4,7 +4,6 @@ import paginate from 'mongoose-paginate-v2'
 const productCollection = 'products'
 
 const productSchema = new mongoose.Schema({
-  owner: { type: String, ref: 'User', default: 'admin', required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true, min: 0 },
@@ -16,7 +15,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['Home', 'Electronic', 'Clothing', 'Sports']
-  }
+  },
+  owner: { type: String, ref: 'User', default: 'admin', required: true }
 })
 
 productSchema.plugin(paginate)

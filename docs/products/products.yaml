@@ -1,0 +1,194 @@
+paths:
+  /api/products/:
+    get:
+      tags:
+        - products
+      summary: lista productos
+      description: lista de todos los productos
+      responses:
+        200:
+          description: lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        500:
+          description: error al listar productos
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Listing products [Internal Error 500], Please try again later.
+    post:
+      tags:
+        - products
+      summary: crear producto
+      description: crea un producto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        201:
+          description: producto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        500:
+          description: error al crear producto
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Creating product [Internal Error 500], Please try again later.
+  /api/products/{pid}:
+    get:
+      tags:
+        - products
+      summary: obtener producto
+      description: obtiene un producto
+      parameters:
+        - name: pid
+          in: path
+          description: id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: producto obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        500:
+          description: error al obtener producto
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Getting product [Internal Error 500], Please try again later.
+    put:
+      tags:
+        - products
+      summary: actualizar producto
+      description: actualiza un producto
+      parameters:
+        - name: pid
+          in: path
+          description: id del producto
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        200:
+          description: producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        500:
+          description: error al actualizar producto
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Updating product [Internal Error 500], Please try again later.
+    delete:
+      tags:
+        - products
+      summary: eliminar producto
+      description: elimina un producto
+      parameters:
+        - name: pid
+          in: path
+          description: id del producto
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: producto eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        500:
+          description: error al eliminar producto
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Deleting product [Internal Error 500], Please try again later.
+  /api/products/create/mockProducts:
+    get:
+      tags:
+        - products
+      summary: crear productos de prueba
+      description: crea productos de prueba
+      responses:
+        200:
+          description: productos de prueba creados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        500:
+          description: error al crear productos de prueba
+          content:
+            application/json:
+              exmaple:
+                status: error
+                error: Error Creating mock products [Internal Error 500], Please try again later.
+        
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: ObjectId
+          description: id del producto
+        name:
+          type: string
+          description: nombre del producto
+        price:
+          type: number
+          description: precio del producto
+        description:
+          type: string
+          description: descripcion del producto
+        image:
+          type: string
+          description: imagen del producto
+        stock:
+          type: integer
+          description: stock del producto
+        category:
+          type: string
+          description: categoria del producto
+        owner:
+          type: ObjectId
+          description: id del usuario que creo el producto
+      example:
+        id: 1
+        name: "Producto 1"
+        price: 1000
+        description: "Descripcion del producto 1"
+        image: "https://picsum.photos/200/300"
+        stock: 10
+        category: "Categoria 1"
+        createdAt: "2021-09-01T00:00:00.000Z"
+        updatedAt: "2021-09-01T00:00:00.000Z"

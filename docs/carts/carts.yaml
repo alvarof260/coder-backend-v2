@@ -1,0 +1,359 @@
+paths:
+  /api/carts:
+    post:
+      tags:
+        - carts
+      summary: Crear carrito
+      description: Crear un carrito de compras al solo solicitar al endpoint.
+      responses:
+        201:
+          description: Carrito creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error creating cart [Internal Error 500], Please try again later.
+  /api/carts/{cid}:
+    get:
+      tags:
+        - carts
+      summary: Obtener carrito
+      description: Obtener un carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+      responses:
+        200:
+          description: Carrito obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              example:
+                status: error
+                error: Cart not found [Not Found 404], Please try again later.
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error getting cart [Internal Error 500], Please try again later.
+    put:
+      tags:
+        - carts
+      summary: Actualizar carrito
+      description: Actualizar un carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+      requestBody:
+        description: Productos a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+              example:
+                products:
+                  - product: 5f9b3b3b3b3b3b3b3b3b3b3b
+                    quantity: 1
+                  - product: 5f6b3b3b3b3b3b3b3b3b3b3b
+                    quantity: 2
+      responses:
+        200:
+          description: Carrito actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              example:
+                status: error
+                error: Cart not found [Not Found 404], Please try again later.
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error updating cart [Internal Error 500], Please try again later.
+    delete:
+      tags:
+        - carts
+      summary: Eliminar carrito
+      description: Eliminar un carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+      responses:
+        200:
+          description: Carrito eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              example:
+                status: error
+                error: Cart not found [Not Found 404], Please try again later.
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error deleting cart [Internal Error 500], Please try again later.
+  /api/carts/{cid}/product/{pid}:
+    post:
+      tags:
+        - carts
+      summary: Agregar o actualizar producto del carrito
+      description: Agregar o actualizar un producto del carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+          example: 6598621c0ccd98933085ec9b
+      requestBody:
+        description: Cantidad de productos a agregar o actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad de productos a agregar o actualizar
+              example:
+                quantity: 1
+        responses:
+          200:
+            description: Producto agregado o actualizado
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Cart'
+          403:
+            description: No autorizado para agregar o actualizar el producto
+            content:
+              application/json:
+                example:
+                  status: error
+                  error: You cannot add your own product to the cart.
+          404:
+            description: Carrito o producto no encontrado
+            content:
+              application/json:
+                example:
+                  status: error
+                  error: Cart or product not found [Not Found 404], Please try again later.
+          500:
+            description: Error interno del servidor
+            content:
+              application/json:
+                example:
+                  status: error
+                  error: Error adding or updating product [Internal Error 500], Please try again later.
+          
+  /api/carts/{cid}/products/{pid}:
+    delete:
+      tags:
+        - carts
+      summary: Eliminar producto del carrito
+      description: Eliminar un producto del carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+          example: 6598621c0ccd98933085ec9b
+      responses:
+        200:
+          description: Producto eliminado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito o producto no encontrado
+          content:
+            application/json:
+              example:
+                status: error
+                error: Cart or product not found [Not Found 404], Please try again later.
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error deleting product [Internal Error 500], Please try again later.
+    put:
+      tags:
+        - carts
+      summary: Actualizar producto del carrito
+      description: Actualizar un producto del carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+        - name: pid
+          in: path
+          description: ID del producto
+          required: true
+          schema:
+            type: string
+          example: 6598621c0ccd98933085ec9b
+      requestBody:
+        description: Cantidad de productos a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  description: Cantidad de productos a actualizar
+              example:
+                quantity: 1
+        responses:
+          200:
+            description: Producto actualizado
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Cart'
+          404:
+            description: Carrito o producto no encontrado
+            content:
+              application/json:
+                example:
+                  status: error
+                  error: Cart or product not found [Not Found 404], Please try again later.
+          500:
+            description: Error interno del servidor
+            content:
+              application/json:
+                example:
+                  status: error
+                  error: Error updating product [Internal Error 500], Please try again later.
+  /api/carts/{cid}/purchase:
+    get:
+      tags:
+        - carts
+      summary: Comprar carrito
+      description: Comprar un carrito de compras al solicitar el endpoint.
+      parameters:
+        - name: cid
+          in: path
+          description: ID del carrito
+          required: true
+          schema:
+            type: string
+          example: 65a308384a072495bf97bd69
+      responses:
+        200:
+          description: Carrito comprado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        404:
+          description: Carrito no encontrado
+          content:
+            application/json:
+              example:
+                status: error
+                error: Cart not found [Not Found 404], Please try again later.
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: error
+                error: Error purchasing cart [Internal Error 500], Please try again later.
+                
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID del carrito generado por mongo
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: ID del producto que fue generado por mongo
+              quantity:
+                type: number
+                description: Cantidad de productos que se agregaron al carrito
+      example:
+        _id: 5f9b3b3b3b3b3b3b3b3b3b3b
+        products:
+          - product: 5f9b3b3b3b3b3b3b3b3b3b3b
+            quantity: 1
+          - product: 5f6b3b3b3b3b3b3b3b3b3b3b
+            quantity: 2
+          

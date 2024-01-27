@@ -6,7 +6,8 @@
   "main": "server/app.js",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon . --"
+    "dev": "nodemon . --",
+    "test": "mocha test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -19,10 +20,13 @@
   },
   "homepage": "https://github.com/alvarof260/coder-backend-v2#readme",
   "devDependencies": {
-    "standard": "17.1.0"
+    "@faker-js/faker": "8.4.0",
+    "chai": "5.0.3",
+    "mocha": "10.2.0",
+    "standard": "17.1.0",
+    "supertest": "6.3.4"
   },
   "dependencies": {
-    "@faker-js/faker": "8.3.1",
     "bcrypt": "5.1.1",
     "commander": "11.1.0",
     "cookie-parser": "1.4.6",

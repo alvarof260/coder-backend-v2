@@ -14,10 +14,10 @@ import {
 const router = Router()
 
 // Ruta para manejar la autenticación de usuarios
-router.post('/login', passport.authenticate('login', { session: false }), login)
+router.post('/login', passport.authenticate('login', { session: false, failureRedirect: '/failLogin' }), login)
 
 // Ruta para manejar el registro de usuarios
-router.post('/register', passport.authenticate('register', { session: false }), register)
+router.post('/register', passport.authenticate('register', { session: false, failureRedirect: '/failRegister' }), register)
 
 // Ruta para manejar el olvido de contraseña
 router.post('/forget-password', forgetPassword)

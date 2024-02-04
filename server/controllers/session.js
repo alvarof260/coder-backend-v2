@@ -12,6 +12,8 @@ export const loginController = async (req, res) => {
         .render('errors/base', { error: 'error in server ' })
     }
 
+    await UserServices.update(req.user._id, { last_connection: new Date() })
+
     res
       .cookie(config.strategy.cookieName, req.user.token, { signed: true })
       .status(200)
@@ -135,7 +137,11 @@ export const githubCallbackController = (req, res) => {
   }
 }
 
-export const logoutController = (req, res) => {
+export const logoutController = async (req, res) => {
+  if (req.user) {
+    logger.info(`User ${req.user.email} logged out`)
+    await UserServices.update(req.user._id, { last_connection: new Date() })
+  }
   // Destruir la sesión y redirigir a la página principal
   res.clearCookie(config.strategy.cookieName).redirect('/')
 }

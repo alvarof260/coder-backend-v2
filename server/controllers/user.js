@@ -5,7 +5,9 @@ export const changeRoleController = async (req, res) => {
     const { uid } = req.params
     const user = await UserServices.getById(uid)
     if (user === null) { res.status(404).json({ status: 'error', error: 'user not found' }) }
-    user.role === 'user' ? (user.role = 'premium') : (user.role = 'user')
+    if (user.document.length === 3) {
+      user.role === 'user' ? (user.role = 'premium') : (user.role = 'user')
+    }
     await UserServices.update(uid, user)
     res.status(200).json({ status: 'success', payload: user })
   } catch (error) {

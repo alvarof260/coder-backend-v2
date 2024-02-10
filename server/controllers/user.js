@@ -93,3 +93,15 @@ export const deleteUsersController = async (req, res) => {
     res.status(400).json({ error: error.message })
   }
 }
+
+export const deleteUserController = async (req, res) => {
+  try {
+    const { uid } = req.params
+    const user = await UserServices.getById(uid)
+    if (user === null) { res.status(404).json({ status: 'error', error: 'user not found' }) }
+    await UserServices.delete(uid)
+    res.status(200).json({ status: 'success', payload: user })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}

@@ -1,6 +1,7 @@
 import config from '../config/config.js'
 import { verifyToken } from '../utils.js'
 import UserDto from '../dto/user.js'
+import { UserServices } from '../repositories/index.js'
 
 export const loginViewController = (req, res) => {
   res.render('session/login', {
@@ -39,4 +40,9 @@ export const failRegisterViewController = (req, res) => {
 
 export const failLoginViewController = (req, res) => {
   res.render('errors/base', { error: 'Passport login failed.' })
+}
+
+export const usersViewController = async (req, res) => {
+  const users = await UserServices.getAllView()
+  res.render('users', { title: 'CoderShop | Users', style: 'products.css', users })
 }

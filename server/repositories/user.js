@@ -7,6 +7,10 @@ export default class UserServices {
     return await this.userDao.getAll()
   }
 
+  getAllView = async () => {
+    return await this.userDao.getAllView()
+  }
+
   getById = async (id) => {
     return await this.userDao.getById(id)
   }

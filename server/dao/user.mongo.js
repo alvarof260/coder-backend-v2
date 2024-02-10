@@ -5,6 +5,10 @@ export default class UserMongoDAO {
     return await UserModel.find()
   }
 
+  getAllView = async () => {
+    return await UserModel.find().lean().exec()
+  }
+
   getByEmail = async (username) => {
     return await UserModel.findOne({ email: username })
   }

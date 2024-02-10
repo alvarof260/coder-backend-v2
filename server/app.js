@@ -19,6 +19,7 @@ import viewsRouter from './routes/view.js'
 import viewSessionRouter from './routes/view-session.js'
 import sessionRouter from './routes/session.js'
 import userRouter from './routes/user.js'
+import viewUser from './routes/view-user.js'
 
 if (cluster.isPrimary) {
   for (let i = 0; i < cpus().length; i++) {
@@ -66,6 +67,7 @@ if (cluster.isPrimary) {
     app.use('/products', passportCall('jwt'), viewsRouter)
     app.use('/carts', passportCall('jwt'), viewsRouter)
     app.use('/apiDocs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
+    app.use('/users', viewUser)
     app.use('/', viewSessionRouter)
 
     const httpServer = app.listen(config.config.port, () => logger.info('http://localhost:8080'))

@@ -1,0 +1,59 @@
+<main>
+    <h1>Users</h1>
+    <section id="users-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="users-list">
+                {{#each users}}
+                <tr>
+                    <td>{{this.first_name}}</td>
+                    <td>{{this.email}}</td>
+                    <td>{{this.role}}</td>
+                    <td><button onclick="changeRole('{{this._id}}')" >change role</button></td>
+                    <td><button onclick="deleteUser('{{this._id}}')">delete</button></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script>
+    function changeRole(id) {
+        fetch('/api/users/premium/' + id, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                location.reload();
+            }
+        });
+    }
+
+    function deleteUser(id) {
+        fetch('/api/users/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 200) {
+                location.reload();
+            }
+        });
+    }
+</script>

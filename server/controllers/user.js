@@ -1,5 +1,6 @@
 import { UserServices } from '../repositories/index.js'
 import { generateToken } from '../utils.js'
+import Userv2Dto from '../dto/userv2.js'
 import config from '../config/config.js'
 
 export const changeRoleController = async (req, res) => {
@@ -36,6 +37,16 @@ export const uploadDocumentsController = async (req, res) => {
       })
     })
     res.status(200).json({ status: 'success', payload: userUpdates })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
+
+export const getProfilesController = async (req, res) => {
+  try {
+    const users = await UserServices.getAll()
+    const usersDto = users.map((user) => new Userv2Dto(user))
+    res.status(200).json({ status: 'success', payload: usersDto })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }

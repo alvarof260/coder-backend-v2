@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport'
 import { fakerES as faker } from '@faker-js/faker'
+import multer from 'multer'
 
 import config from './config/config.js'
 
@@ -71,6 +72,28 @@ export const generateProducts = () => {
   return products
 }
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    let path = __dirname + '/docs/'
+    switch (file.fieldname) {
+      case 'profiles':
+        path += 'profiles'
+        break
+      case 'products':
+        path += 'products'
+        break
+      case 'documents':
+        path += 'documents'
+        break
+    }
+    cb(null, path)
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  }
+})
+
+export const uploader = multer({ storage })
 /*
 export const verifyProduct = (product) => {
   const message = {}

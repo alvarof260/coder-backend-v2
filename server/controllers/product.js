@@ -134,7 +134,7 @@ export const getProductByIdController = async (req, res) => {
 
 export const createProductController = async (req, res) => {
   try {
-    if (req.user.role === 'user') res.status(403).json({ status: 'error', error: 'You are not allowed to create products.' })
+    if (req.user.user.role === 'user') res.status(403).json({ status: 'error', error: 'You are not allowed to create products.' })
     const product = req.body
     if (
       !product.title ||
@@ -189,12 +189,12 @@ export const updateProductController = async (req, res) => {
     const product = await ProductServices.getById(pid)
 
     // Verifica si el usuario es premium y si es el propietario del producto
-    if (req.user.role === 'premium' && product.owner !== req.user._id) {
+    if (req.user.user.role === 'premium' && product.owner !== req.user._id) {
       return res.status(403).json({ status: 'error', error: 'You do not have permission to update this product because you are not the owner.' })
     }
 
     // Verifica si el usuario es un administrador
-    if (req.user.role !== 'admin') {
+    if (req.user.user.role !== 'admin') {
       return res.status(403).json({ status: 'error', error: 'You do not have permission to update this product because you are not an administrator.' })
     }
 
@@ -233,9 +233,9 @@ export const deleteProductController = async (req, res) => {
     const pid = req.params.pid
 
     const product = await ProductServices.getById(pid)
-    if (req.user.role === 'premium' && product.owner !== req.user._id) res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not the owner.' })
+    if (req.user.user.role === 'premium' && product.owner !== req.user._id) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not the owner.' })
 
-    if (req.user.role !== 'admin') res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not an administrator.' })
+    if (req.user.user.role !== 'admin' && product.owner === req.user.user.role) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not an administrator.' })
 
     const productDeleted = await ProductServices.delete(pid)
     if (productDeleted) {

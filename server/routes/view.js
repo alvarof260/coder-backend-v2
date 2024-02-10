@@ -10,7 +10,7 @@ import { handlePolicies } from '../middlewares/auth.js'
 const router = Router()
 // const PM = new ProductManager('./server/data/products.json')
 
-router.get('/', async (req, res) => {
+router.get('/', passportCall('jwt'), handlePolicies(['USER', 'PREMIUM', 'ADMIN']), async (req, res) => {
   const decoded = verifyToken(req.signedCookies[config.strategy.cookieName])
   // Llamada a la función getProducts para obtener los datos
   const result = await ProductServices.getAllPaginates(req, res)
@@ -55,7 +55,7 @@ router.get('/', async (req, res) => {
 })
 
 // manejos de productos que estan a la ventas
-router.get('/realtimeproducts', passportCall('jwt'), handlePolicies(['USER', 'PREMIUM', 'ADMIN']), async (req, res) => {
+router.get('/realtimeproducts', passportCall('jwt'), handlePolicies(['PREMIUM', 'ADMIN']), async (req, res) => {
   // const products = await PM.getProducts()
   const products = await ProductServices.getAllView()
   res.render('realTimeProducts', { title: 'CoderShop | Admin Products', style: 'products.css', products })

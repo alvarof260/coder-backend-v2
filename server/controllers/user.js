@@ -1,3 +1,5 @@
+import nodemailer from 'nodemailer'
+
 import { UserServices } from '../repositories/index.js'
 import { generateToken } from '../utils.js'
 import Userv2Dto from '../dto/userv2.js'
@@ -47,6 +49,46 @@ export const getProfilesController = async (req, res) => {
     const users = await UserServices.getAll()
     const usersDto = users.map((user) => new Userv2Dto(user))
     res.status(200).json({ status: 'success', payload: usersDto })
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
+}
+
+export const deleteUsersController = async (req, res) => {
+  try {
+    const users = await UserServices.getAll()
+    const dateNow = new Date()
+    const usersDeleted = []
+    console.log(users)
+    console.log(dateNow)
+    users.map(async (user) => {
+      if (new Date(user.last_connection) < dateNow.setDate(dateNow.getDate() - 2)) {
+        console.log(new Date(user.last_connection))
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: config.email.user,
+            pass: config.email.password
+          }
+        })
+
+        transporter.sendMail({
+          from: config.email.user,
+          to: user.email,
+          subject: 'Account Deleted',
+          html: `<h1>Your account are deleted</h1>
+                <br>
+                <p>Sorry, your account has been deleted due to inactivity for more than 2 days</p>`
+        })
+
+        usersDeleted.push(user)
+        console.log('user deleted')
+        await UserServices.delete(user._id)
+      } else {
+        console.log('user not deleted')
+      }
+    })
+    res.status(200).json({ status: 'success', payload: usersDeleted })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }

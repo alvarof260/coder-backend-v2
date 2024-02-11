@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
     required: true,
     enum: ['Home', 'Electronic', 'Clothing', 'Sports']
   },
-  owner: { type: String, ref: 'User', default: 'admin', required: true }
+  owner: { type: String, ref: 'users', default: 'admin', required: true }
 })
 
 productSchema.plugin(paginate)

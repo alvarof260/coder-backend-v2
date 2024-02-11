@@ -9,8 +9,13 @@ export const changeRoleController = async (req, res) => {
   try {
     const { uid } = req.params
     const user = await UserServices.getById(uid)
-    if (user === null) { res.status(404).json({ status: 'error', error: 'user not found' }) }
-    if (user.document.length === 3) {
+    if (user === null) {
+      res.status(404).json({ status: 'error', error: 'user not found' })
+    }
+    if (user.role === 'admin') {
+      res.status(400).json({ status: 'error', error: 'user is admin' })
+    }
+    if (user.documents.length === 0) {
       user.role === 'user' ? (user.role = 'premium') : (user.role = 'user')
     }
     await UserServices.update(uid, user)
@@ -62,7 +67,9 @@ export const deleteUsersController = async (req, res) => {
     console.log(users)
     console.log(dateNow)
     users.map(async (user) => {
-      if (new Date(user.last_connection) < dateNow.setDate(dateNow.getDate() - 2)) {
+      if (
+        new Date(user.last_connection) < dateNow.setDate(dateNow.getDate() - 2)
+      ) {
         console.log(new Date(user.last_connection))
         const transporter = nodemailer.createTransport({
           service: 'gmail',
@@ -98,7 +105,9 @@ export const deleteUserController = async (req, res) => {
   try {
     const { uid } = req.params
     const user = await UserServices.getById(uid)
-    if (user === null) { res.status(404).json({ status: 'error', error: 'user not found' }) }
+    if (user === null) {
+      res.status(404).json({ status: 'error', error: 'user not found' })
+    }
     await UserServices.delete(uid)
     res.status(200).json({ status: 'success', payload: user })
   } catch (error) {

@@ -1,9 +1,12 @@
+import nodemailer from 'nodemailer'
+
 import { ProductServices } from '../repositories/index.js'
 import CustomError from '../services/errors/CustomError.js'
 import EErrors from '../services/errors/enums.js'
 import { generateProductInfoError } from '../services/errors/info.js'
 import { generateProducts } from '../utils.js'
 import logger from '../winston.js'
+import config from '../config/config.js'
 
 /* export const getProducts = async (req, res) => {
   try {
@@ -154,7 +157,7 @@ export const createProductController = async (req, res) => {
       logger.error(error.cause)
       return res.status(400).json({ status: 'error', error: error.message })
     }
-    product.owner = req.user._id
+    product.owner = req.user.user.email
 
     const productAdd = await ProductServices.create(product)
     res.status(201).json({ status: 'success', payload: productAdd })
@@ -233,13 +236,30 @@ export const deleteProductController = async (req, res) => {
     const pid = req.params.pid
 
     const product = await ProductServices.getById(pid)
-    if (req.user.user.role === 'premium' && product.owner !== req.user._id) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not the owner.' })
 
-    if (req.user.user.role !== 'admin' && product.owner === req.user.user.role) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not an administrator.' })
+    if (product.owner !== req.user.user.email) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not the owner.' })
+
+    if (req.user.user.role !== 'admin' && product.owner !== req.user.user.email) return res.status(403).json({ status: 'error', error: 'You do not have permission to delete this product because you are not an administrator.' })
 
     const productDeleted = await ProductServices.delete(pid)
     if (productDeleted) {
       // Si productDeleted existe, significa que se eliminó correctamente
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: config.email.user,
+          pass: config.email.password
+        }
+      })
+
+      transporter.sendMail({
+        from: config.email.user,
+        to: req.user.user.email,
+        subject: 'Your product has been deleted',
+        html: `<h1>Your product has been deleted</h1>
+        <p>If you think it is an error or want to know why the product was deleted, contact us through our page.</p>
+        `
+      })
       return res
         .status(200)
         .json({ status: 'success', payload: productDeleted })

@@ -5,6 +5,12 @@
         <a href="/carts/{{user.cart}}" id="cart">mi carrito</a>
         <a href="/api/session/logout">logout</a>
         <a href="/profile">profile</a>
+        {{#if isAdmin }}
+            <a href="/users/">users</a>
+        {{/if}}
+        {{#if isPremium }}
+            <a href="/products/realtimeproducts">add product</a>
+        {{/if}}
     </nav>
 </header>
 <main>

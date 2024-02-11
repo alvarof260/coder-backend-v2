@@ -32,6 +32,8 @@ router.get('/', passportCall('jwt'), handlePolicies(['USER', 'PREMIUM', 'ADMIN']
       }
       totalPages.push({ page: index, link }) // Agregar el enlace a la lista de páginas
     }
+    const isAdmin = decoded.user?.role === 'admin'
+    const isPremium = decoded.user?.role === 'premium'
 
     // Renderizar la vista 'home' con la información de paginación y productos
     res.render('home', {
@@ -46,7 +48,9 @@ router.get('/', passportCall('jwt'), handlePolicies(['USER', 'PREMIUM', 'ADMIN']
         totalPages // Enlaces de todas las páginas disponibles
       },
       // user: req.session.user
-      user: decoded.user
+      user: decoded.user,
+      isAdmin,
+      isPremium
     })
   } else {
     // Si el estado de la respuesta no es 200, enviar el código de estado y el mensaje de error

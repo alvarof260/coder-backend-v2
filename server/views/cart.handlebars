@@ -12,26 +12,21 @@
             <thead>
                 <tr>
                     <th>Title</th>
-                    <th>Description</th>
                     <th>Price</th>
-                    <th>Code</th>
-                    <th>Stock</th>
-                    <th>Category</th>
+                    <th>quantity</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each cart.products}}
                 <tr>
                     <td>{{this.product.title}}</td>
-                    <td>{{this.product.description}}</td>
                     <td>${{this.product.price}}</td>
-                    <td>{{this.product.code}}</td>
-                    <td>{{this.product.stock}}</td>
-                    <td>{{this.product.category}}</td>
+                    <td>{{this.quantity}}</td>
                 </tr>   
                 {{/each }}
             </tbody>
         </table>
+        <button id="pay" data-id="{{cart._id}}">comprar</button>
         {{else}}
         <p>No hay productos</p>
         {{/if}}
@@ -40,3 +35,18 @@
 <footer>
     <small>copyright © 2024  - Alvaro Estanislao Figueroa </small>
 </footer>
+
+<script>
+    const pay = document.getElementById('pay')
+    const cartId = pay.dataset.id 
+    pay.addEventListener('click', async () => {
+        const response = await fetch(`/api/carts/${cartId}/purchase`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json()
+        window.location.href = data.payload.url
+    })
+</script>

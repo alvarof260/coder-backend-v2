@@ -35,6 +35,9 @@ export default {
   email: {
     user: process.env.EMAIL_GMAIL,
     password: process.env.EMAIL_PASSWORD
+  },
+  stripe: {
+    secretKey: process.env.SECRET_KEY
   }
 
 }

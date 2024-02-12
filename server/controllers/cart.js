@@ -1,9 +1,16 @@
 import { Types } from 'mongoose'
-import { CartServices, ProductServices } from '../repositories/index.js'
+import Stripe from 'stripe'
+
+import {
+  CartServices,
+  ProductServices,
+  TicketServices
+} from '../repositories/index.js'
 import { generateCode } from '../utils.js'
 import logger from '../winston.js'
 import CustomError from '../services/errors/CustomError.js'
 import EErrors from '../services/errors/enums.js'
+import config from '../config/config.js'
 
 export const createCartController = async (_, res) => {
   try {
@@ -81,7 +88,14 @@ export const updateProductFromCartController = async (req, res) => {
       return res.status(404).json({ status: 'error', error: error.message })
     }
 
-    if (product.owner === req.user._id) res.status(403).json({ status: 'error', error: 'You cannot add your own product to the cart.' })
+    if (product.owner === req.user.user._id) {
+      res
+        .status(403)
+        .json({
+          status: 'error',
+          error: 'You cannot add your own product to the cart.'
+        })
+    }
 
     const cartToAdd = await CartServices.getById(cid)
     if (cartToAdd === null) {
@@ -399,12 +413,12 @@ export const deleteCartController = async (req, res) => {
   }
 }
 
+const stripe = new Stripe(config.stripe.secretKey)
+
 export const purchasedCartController = async (req, res) => {
   try {
     const cid = req.params.cid
-
     const cart = await CartServices.getById(cid)
-
     if (cart === null) {
       const error = CustomError.createError({
         name: 'Error fetching cart.',
@@ -417,12 +431,11 @@ export const purchasedCartController = async (req, res) => {
     }
 
     let total = 0
+    const productsPurchased = []
     const outOfStockProducts = []
     for (let index = 0; index < cart.products.length; index++) {
       logger.warn(cart.products[index])
-      const product = await ProductServices.getById(
-        cart.products[index].product
-      )
+      const product = await ProductServices.getById(cart.products[index].product)
       if (product === null) {
         const error = CustomError.createError({
           name: 'Error fetching product.',
@@ -437,25 +450,45 @@ export const purchasedCartController = async (req, res) => {
         })
       }
       if (cart.products[index].quantity > product.stock) {
-        outOfStockProducts.push(cart.products[index])
+        outOfStockProducts.push({ product, quantity: cart.products[index].quantity })
         continue
       }
+      productsPurchased.push({ product, quantity: cart.products[index].quantity })
       product.stock -= cart.products[index].quantity
       total += product.price * cart.products[index].quantity
       await ProductServices.update(product._id, product)
     }
 
+    const ticket = await TicketServices.create({
+      code: generateCode(),
+      amount: parseFloat(total.toFixed(2)),
+      purchaser: req.user.user.email
+    })
+
+    console.log(productsPurchased)
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: productsPurchased.map((product) => {
+        return {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: product.product.title
+            },
+            unit_amount: Number((product.product.price.toFixed(2) + '').replace('.', ''))
+          },
+          quantity: product.quantity
+        }
+      }),
+      mode: 'payment',
+      success_url: `http://${req.hostname}:${config.config.port}/api/carts/success/${ticket.code}`,
+      cancel_url: `http://${req.hostname}:${config.config.port}/api/carts/cancel`
+    })
     // Actualizar el carrito para eliminar los productos que se han comprado y agregar los productos que están fuera de stock
     cart.products = outOfStockProducts
     await CartServices.update(cart._id, cart)
 
-    const ticket = await CartServices.createTicket({
-      code: generateCode(),
-      amount: total,
-      purcharser: req.user.email
-    })
-
-    res.status(201).json({ status: 'success', payload: ticket })
+    res.status(201).json({ status: 'success', payload: session })
   } catch (err) {
     const error = CustomError.createError({
       name: 'Error purchasing cart.',
@@ -466,5 +499,36 @@ export const purchasedCartController = async (req, res) => {
     })
     logger.error(error.cause)
     res.status(500).json({ status: 'error', error: err.message })
+  }
+}
+
+export const successPurchaseController = async (req, res) => {
+  try {
+    const tid = req.params.tid
+    const ticket = await TicketServices.getByCode(tid)
+    console.log(ticket)
+    if (ticket === null) {
+      const error = CustomError.createError({
+        name: 'Error fetching ticket.',
+        cause: 'User tried to fetch a ticket that does not exists.',
+        message: `Ticket id: ${tid} not found.`,
+        code: EErrors.INVALID_DATA_ERROR
+      })
+      logger.error(error.cause)
+      return res.status(404).json({ status: 'error', error: error.message })
+    }
+    res
+      .status(200)
+      .send('<h1>Compra exitosa</h1> <p>Gracias por su compra</p>')
+  } catch (err) {
+    const error = CustomError.createError({
+      name: 'Error fetching ticket.',
+      cause: err.message,
+      message:
+        'Error fetching ticket [Internal Error 500], Please try again later.',
+      code: EErrors.DATABASE_ERROR
+    })
+    logger.error(error.cause)
+    res.status(500).json({ status: 'error', error: error.message })
   }
 }

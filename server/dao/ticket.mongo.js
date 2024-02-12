@@ -9,6 +9,10 @@ export default class TicketMongoDAO {
     return await TicketModel.findById(id)
   }
 
+  getByCode = async (code) => {
+    return await TicketModel.findOne({ code })
+  }
+
   create = async (ticket) => {
     return await TicketModel.create(ticket)
   }

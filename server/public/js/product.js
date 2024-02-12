@@ -10,7 +10,7 @@ const ruta = urlObj.pathname
 
 addToCart = (pid) => {
   fetch(`/api${ruta}/product/${pid}`, postOptions)
-    .then(response => response.json)
+    .then(response => response.json())
     .then(response => {
       console.log(response)
       if (response.status === 'error') throw new Error(response.error)
